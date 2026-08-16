@@ -1,0 +1,29 @@
+{
+  "expo": {
+    "name": "tech-challenge-3",
+    "slug": "tech-challenge-3",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "techchallenge3",
+    "userInterfaceStyle": "automatic",
+    "android": {
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "output": "static"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#ffffff"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}
