@@ -98,7 +98,7 @@ export default StyleSheet.create({
     marginBottom: 20,
   },
   socialButton: {
-    backgroundColor: "#DB4437", // vermelho do Google
+    backgroundColor: "#DB4437",
     width: 46,
     height: 46,
     borderRadius: 23,
@@ -106,17 +106,49 @@ export default StyleSheet.create({
     alignItems: "center",
   },
   socialButtonFb: {
-    backgroundColor: "#3B5998", // azul do Facebook
+    backgroundColor: "#3B5998",
   },
   socialButtonDisabled: {
     opacity: 0.45,
   },
-  signup: {
+  footerText: {
     color: colors.textMuted,
     fontSize: 13,
     textAlign: "center",
   },
-  signupLink: {
+  footerLink: {
+    color: colors.primary,
+    fontWeight: "bold",
+  },
+  policyRow: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 12,
+  },
+  checkbox: {
+    width: 18,
+    height: 18,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: colors.primary,
+    marginRight: 8,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  checkboxChecked: {
+    backgroundColor: colors.primary,
+  },
+  checkboxMark: {
+    color: colors.textLight,
+    fontSize: 12,
+    fontWeight: "bold",
+  },
+  policyText: {
+    color: colors.textLight,
+    fontSize: 13,
+  },
+  policyLink: {
     color: colors.primary,
     fontWeight: "bold",
   },
