@@ -108,6 +108,9 @@ export default StyleSheet.create({
   socialButtonFb: {
     backgroundColor: "#3B5998", // azul do Facebook
   },
+  socialButtonDisabled: {
+    opacity: 0.45,
+  },
   signup: {
     color: colors.textMuted,
     fontSize: 13,

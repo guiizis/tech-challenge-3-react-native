@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, ImageBackground } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import { FontAwesome5 } from "@expo/vector-icons";
-import styles from "../styles/loginStyles";
+import { LinearGradient } from "expo-linear-gradient";
+import { useState } from "react";
+import { ImageBackground, Text, TextInput, TouchableOpacity, View } from "react-native";
 import colors from "../styles/colors";
+import styles from "../styles/loginStyles";
 
 export default function LoginScreen() {
   const [username, setUsername] = useState("");
@@ -26,7 +26,7 @@ export default function LoginScreen() {
         <View style={styles.card}>
           <Text style={styles.section}>LOGIN</Text>
 
-          <Text style={styles.label}>Username</Text>
+          <Text style={styles.label}>Email</Text>
           <TextInput
             style={styles.input}
             placeholderTextColor="#aaa"
@@ -34,7 +34,7 @@ export default function LoginScreen() {
             onChangeText={setUsername}
           />
 
-          <Text style={styles.label}>Password</Text>
+          <Text style={styles.label}>Senha</Text> 
           <TextInput
             style={styles.input}
             placeholderTextColor="#aaa"
@@ -43,7 +43,7 @@ export default function LoginScreen() {
             onChangeText={setPassword}
           />
 
-          <Text style={styles.forgot}>Forgot Password ?</Text>
+          <Text style={styles.forgot}>Esqueceu sua senha ?</Text>
 
           <TouchableOpacity style={styles.button} onPress={() => console.log("Login")}>
             <LinearGradient
@@ -60,18 +60,26 @@ export default function LoginScreen() {
         {/* Redes sociais */}
         <Text style={styles.socialText}>Login with social accounts</Text>
         <View style={styles.socialRow}>
-          <TouchableOpacity style={styles.socialButton}>
+          <TouchableOpacity
+            style={[styles.socialButton, styles.socialButtonDisabled]}
+            disabled
+            accessibilityState={{ disabled: true }}
+          >
             <FontAwesome5 name="google" size={20} color="#fff" />
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.socialButton, styles.socialButtonFb]}>
+          <TouchableOpacity
+            style={[styles.socialButton, styles.socialButtonFb, styles.socialButtonDisabled]}
+            disabled
+            accessibilityState={{ disabled: true }}
+          >
             <FontAwesome5 name="facebook-f" size={20} color="#fff" />
           </TouchableOpacity>
         </View>
 
         {/* Sign up */}
         <Text style={styles.signup}>
-          Don't have an account?{" "}
-          <Text style={styles.signupLink}>Sign up</Text>
+          Não tem uma conta?{" "}
+          <Text style={styles.signupLink}>Cadastrar-se</Text>
         </Text>
       </View>
     </ImageBackground>
