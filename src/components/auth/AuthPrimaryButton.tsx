@@ -6,13 +6,27 @@ import styles from "@/styles/authStyles";
 type AuthPrimaryButtonProps = {
   label: string;
   onPress: () => void;
+  disabled?: boolean;
 };
 
-export default function AuthPrimaryButton({ label, onPress }: AuthPrimaryButtonProps) {
+export default function AuthPrimaryButton({
+  label,
+  onPress,
+  disabled = false,
+}: AuthPrimaryButtonProps) {
   return (
-    <TouchableOpacity style={styles.button} onPress={onPress}>
+    <TouchableOpacity
+      style={[styles.button, disabled && styles.buttonDisabled]}
+      onPress={onPress}
+      disabled={disabled}
+      accessibilityState={{ disabled }}
+    >
       <LinearGradient
-        colors={[colors.gradientLeft, colors.gradientRight]}
+        colors={
+          disabled
+            ? [colors.disabledGradientLeft, colors.disabledGradientRight]
+            : [colors.gradientLeft, colors.gradientRight]
+        }
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={styles.gradient}

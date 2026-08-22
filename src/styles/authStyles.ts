@@ -34,10 +34,10 @@ export default StyleSheet.create({
     backgroundColor: colors.cardBackground,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
+    borderColor: colors.cardBorder,
     padding: 22,
     marginBottom: 30,
-    shadowColor: "#000",
+    shadowColor: colors.shadow,
     shadowOpacity: 0.5,
     shadowRadius: 10,
     elevation: 6,
@@ -64,6 +64,14 @@ export default StyleSheet.create({
     padding: 12,
     borderRadius: 8,
   },
+  inputError: {
+    borderColor: colors.borderError,
+  },
+  errorText: {
+    color: colors.textError,
+    fontSize: 12,
+    marginTop: 5,
+  },
   forgot: {
     color: colors.primary,
     fontSize: 13,
@@ -75,6 +83,9 @@ export default StyleSheet.create({
     borderRadius: 25,
     overflow: "hidden",
     marginTop: 15,
+  },
+  buttonDisabled: {
+    opacity: 0.65,
   },
   gradient: {
     paddingVertical: 14,
@@ -98,7 +109,7 @@ export default StyleSheet.create({
     marginBottom: 20,
   },
   socialButton: {
-    backgroundColor: "#DB4437",
+    backgroundColor: colors.google,
     width: 46,
     height: 46,
     borderRadius: 23,
@@ -106,7 +117,7 @@ export default StyleSheet.create({
     alignItems: "center",
   },
   socialButtonFb: {
-    backgroundColor: "#3B5998",
+    backgroundColor: colors.facebook,
   },
   socialButtonDisabled: {
     opacity: 0.45,
@@ -151,5 +162,11 @@ export default StyleSheet.create({
   policyLink: {
     color: colors.primary,
     fontWeight: "bold",
+  },
+  policyErrorText: {
+    color: colors.textError,
+    fontSize: 12,
+    marginTop: 6,
+    textAlign: "center",
   },
 });
