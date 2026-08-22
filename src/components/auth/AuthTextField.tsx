@@ -3,7 +3,6 @@ import { useState } from "react";
 import { Text, TextInput, TextInputProps, TouchableOpacity, View } from "react-native";
 import styles from "@/styles/authStyles";
 import colors from "@/styles/colors";
-import { useAuthScreen } from "./AuthScreen";
 
 type AuthTextFieldProps = TextInputProps & {
   label: string;
@@ -13,16 +12,7 @@ type AuthTextFieldProps = TextInputProps & {
 export default function AuthTextField({ label, error, ...inputProps }: AuthTextFieldProps) {
   const hasPasswordVisibilityToggle = Boolean(inputProps.secureTextEntry);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const authScreen = useAuthScreen();
   const secureTextEntry = hasPasswordVisibilityToggle && !isPasswordVisible;
-
-  function handleFocus(event: Parameters<NonNullable<TextInputProps["onFocus"]>>[0]) {
-    inputProps.onFocus?.(event);
-
-    if (hasPasswordVisibilityToggle) {
-      authScreen?.scrollToFocusedInput();
-    }
-  }
 
   return (
     <View>
@@ -37,7 +27,6 @@ export default function AuthTextField({ label, error, ...inputProps }: AuthTextF
           autoCapitalize="none"
           {...inputProps}
           secureTextEntry={secureTextEntry}
-          onFocus={handleFocus}
         />
         {hasPasswordVisibilityToggle ? (
           <TouchableOpacity
