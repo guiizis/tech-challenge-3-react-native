@@ -21,6 +21,11 @@ export type SignupInput = {
   password: string;
 };
 
+export type ChangePasswordInput = {
+  email: string;
+  password: string;
+};
+
 export type SignupResponse = LoginResponse & {
   account: {
     id: number;
@@ -74,4 +79,25 @@ export async function signup(input: SignupInput) {
   }
 
   return data as SignupResponse;
+}
+
+export async function changePassword(input: ChangePasswordInput) {
+  const response = await fetch(`${env.apiUrl}/password`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email: input.email.trim(),
+      password: input.password,
+    }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message ?? "Nao foi possivel alterar a senha.");
+  }
+
+  return data as LoginResponse;
 }
