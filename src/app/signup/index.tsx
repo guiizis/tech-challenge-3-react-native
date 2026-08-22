@@ -41,6 +41,21 @@ export default function SignupScreen() {
     return touched[field] ? errors[field] : undefined;
   }
 
+  function handleNameChange(value: string) {
+    markAsTouched("name");
+    setName(value);
+  }
+
+  function handleEmailChange(value: string) {
+    markAsTouched("email");
+    setEmail(value);
+  }
+
+  function handlePasswordChange(value: string) {
+    markAsTouched("password");
+    setPassword(value);
+  }
+
   function handleSignup() {
     setTouched({
       name: true,
@@ -62,7 +77,7 @@ export default function SignupScreen() {
         <AuthTextField
           label="Nome"
           value={name}
-          onChangeText={setName}
+          onChangeText={handleNameChange}
           onBlur={() => markAsTouched("name")}
           error={getVisibleError("name")}
           textContentType="name"
@@ -71,7 +86,7 @@ export default function SignupScreen() {
         <AuthTextField
           label="Email"
           value={email}
-          onChangeText={setEmail}
+          onChangeText={handleEmailChange}
           onBlur={() => markAsTouched("email")}
           error={getVisibleError("email")}
           keyboardType="email-address"
@@ -81,7 +96,7 @@ export default function SignupScreen() {
         <AuthTextField
           label="Senha"
           value={password}
-          onChangeText={setPassword}
+          onChangeText={handlePasswordChange}
           onBlur={() => markAsTouched("password")}
           error={getVisibleError("password")}
           secureTextEntry

@@ -1,0 +1,81 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "User teste",
+      "email": "teste@bytebank.com",
+      "password": "teste123",
+      "avatarUrl": "https://i.pravatar.cc/100?img=12",
+      "accountId": 1
+    }
+  ],
+  "accounts": [
+    {
+      "id": 1,
+      "userId": 1,
+      "type": "Conta Corrente",
+      "balance": 8420,
+      "currency": "BRL",
+      "agency": "0001",
+      "number": "12345-6"
+    }
+  ],
+  "cards": [
+    {
+      "id": 1,
+      "userId": 1,
+      "accountId": 1,
+      "brand": "ByteBank",
+      "lastFourDigits": "2019",
+      "holderName": "User teste",
+      "limit": 5000,
+      "availableLimit": 3820
+    }
+  ],
+  "transactions": [
+    {
+      "id": 1,
+      "userId": 1,
+      "accountId": 1,
+      "type": "income",
+      "title": "Freelance Work",
+      "category": "Income",
+      "amount": 421,
+      "date": "2019-09-06",
+      "description": "Pagamento recebido por trabalho freelance"
+    },
+    {
+      "id": 2,
+      "userId": 1,
+      "accountId": 1,
+      "type": "expense",
+      "title": "Spotify Subscr.",
+      "category": "Subscription",
+      "amount": 24,
+      "date": "2019-09-12",
+      "description": "Assinatura mensal Spotify"
+    },
+    {
+      "id": 3,
+      "userId": 1,
+      "accountId": 1,
+      "type": "expense",
+      "title": "Dropbox Plan",
+      "category": "Subscription",
+      "amount": 144,
+      "date": "2019-09-18",
+      "description": "Plano mensal Dropbox"
+    },
+    {
+      "id": 4,
+      "userId": 1,
+      "accountId": 1,
+      "type": "income",
+      "title": "Youtube Ads.",
+      "category": "Income",
+      "amount": 32,
+      "date": "2019-09-10",
+      "description": "Receita de anuncios"
+    }
+  ]
+}

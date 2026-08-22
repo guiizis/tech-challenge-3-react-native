@@ -1,0 +1,68 @@
+const jsonServer = require("json-server");
+const path = require("path");
+
+const server = jsonServer.create();
+const router = jsonServer.router(path.join(__dirname, "db.json"));
+const middlewares = jsonServer.defaults();
+const port = process.env.MOCK_API_PORT || 3000;
+
+server.use(middlewares);
+server.use(jsonServer.bodyParser);
+
+server.use((request, response, next) => {
+  response.header("Access-Control-Allow-Origin", "*");
+  response.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept",
+  );
+
+  setTimeout(next, 300);
+});
+
+server.post("/signup", (request, response) => {
+  const { name, email, password } = request.body;
+  const database = router.db;
+  const users = database.get("users");
+  const normalizedEmail = String(email ?? "").trim().toLowerCase();
+  const existingUser = users.find({ email: normalizedEmail }).value();
+
+  if (existingUser) {
+    response.status(409).json({ message: "Este email ja esta cadastrado." });
+    return;
+  }
+
+  const userId = Date.now();
+  const accountId = userId + 1;
+  const user = {
+    id: userId,
+    name: String(name ?? "").trim(),
+    email: normalizedEmail,
+    password,
+    avatarUrl: "https://i.pravatar.cc/100?img=13",
+    accountId,
+  };
+
+  const account = {
+    id: accountId,
+    userId,
+    type: "Conta Corrente",
+    balance: 0,
+    currency: "BRL",
+    agency: "0001",
+    number: `${String(userId).slice(-5)}-0`,
+  };
+
+  users.push(user).write();
+  database.get("accounts").push(account).write();
+
+  response.status(201).json({
+    user,
+    account,
+  });
+});
+
+server.use(router);
+
+server.listen(port, () => {
+  console.log(`Mock API running at http://localhost:${port}`);
+});
