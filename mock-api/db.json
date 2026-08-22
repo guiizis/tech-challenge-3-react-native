@@ -7,6 +7,22 @@
       "password": "teste123",
       "avatarUrl": "https://i.pravatar.cc/100?img=12",
       "accountId": 1
+    },
+    {
+      "id": 1787428672211,
+      "name": "teste",
+      "email": "teste@teste.com.br",
+      "password": "teste1234",
+      "avatarUrl": "https://i.pravatar.cc/100?img=13",
+      "accountId": 1787428672212
+    },
+    {
+      "id": 1787428960389,
+      "name": "teste 1",
+      "email": "teste1@teste.com.br",
+      "password": "teste1234",
+      "avatarUrl": "https://i.pravatar.cc/100?img=13",
+      "accountId": 1787428960390
     }
   ],
   "accounts": [
@@ -18,6 +34,24 @@
       "currency": "BRL",
       "agency": "0001",
       "number": "12345-6"
+    },
+    {
+      "id": 1787428672212,
+      "userId": 1787428672211,
+      "type": "Conta Corrente",
+      "balance": 0,
+      "currency": "BRL",
+      "agency": "0001",
+      "number": "72211-0"
+    },
+    {
+      "id": 1787428960390,
+      "userId": 1787428960389,
+      "type": "Conta Corrente",
+      "balance": 0,
+      "currency": "BRL",
+      "agency": "0001",
+      "number": "60389-0"
     }
   ],
   "cards": [

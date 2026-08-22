@@ -76,8 +76,10 @@ server.post("/signup", (request, response) => {
   users.push(user).write();
   database.get("accounts").push(account).write();
 
+  const { password: _password, ...safeUser } = user;
+
   response.status(201).json({
-    user,
+    user: safeUser,
     account,
   });
 });

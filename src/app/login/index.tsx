@@ -1,7 +1,7 @@
 import { Link } from "expo-router";
 import { useState } from "react";
 import { Text } from "react-native";
-import AppErrorAlert from "@/components/AppErrorAlert";
+import AppAlert from "@/components/AppAlert";
 import AuthCard from "@/components/auth/AuthCard";
 import AuthHeader from "@/components/auth/AuthHeader";
 import AuthPrimaryButton from "@/components/auth/AuthPrimaryButton";
@@ -79,7 +79,7 @@ export default function LoginScreen() {
       <AuthHeader title="Welcome Back" accent="Dear Friend" />
 
       <AuthCard title="LOGIN">
-        <AppErrorAlert message={loginError} />
+        <AppAlert message={loginError} />
 
         <AuthTextField
           label="Email"

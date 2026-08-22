@@ -8,9 +8,12 @@ export default {
   textMuted: "#B8B8C7",
   textPlaceholder: "#AAAAAA",
   textError: "#FF8A8A",
+  textSuccess: "#66E6A8",
   borderError: "#FF6B6B",
   errorBackground: "rgba(255,107,107,0.14)",
   errorBorder: "rgba(255,107,107,0.35)",
+  successBackground: "rgba(102,230,168,0.14)",
+  successBorder: "rgba(102,230,168,0.35)",
   shadow: "#000000",
   cardBorder: "rgba(255,255,255,0.1)",
   cardBackground: "rgba(30, 25, 55, 0.45)", // vidro fosco (glass) sobre a imagem
