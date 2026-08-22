@@ -19,6 +19,27 @@ server.use((request, response, next) => {
   setTimeout(next, 300);
 });
 
+server.post("/login", (request, response) => {
+  const { email, password } = request.body;
+  const users = router.db.get("users");
+  const normalizedEmail = String(email ?? "").trim().toLowerCase();
+  const user = users.find({ email: normalizedEmail }).value();
+
+  if (!user) {
+    response.status(404).json({ message: "Usuario nao encontrado." });
+    return;
+  }
+
+  if (user.password !== password) {
+    response.status(401).json({ message: "Senha incorreta." });
+    return;
+  }
+
+  const { password: _password, ...safeUser } = user;
+
+  response.status(200).json({ user: safeUser });
+});
+
 server.post("/signup", (request, response) => {
   const { name, email, password } = request.body;
   const database = router.db;

@@ -6,5 +6,5 @@ function getApiMode(): ApiMode {
 
 export const env = {
   apiMode: getApiMode(),
-  apiUrl: process.env.EXPO_PUBLIC_API_URL ?? "",
+  apiUrl: process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:3000",
 };

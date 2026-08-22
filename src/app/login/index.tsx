@@ -1,12 +1,14 @@
 import { Link } from "expo-router";
 import { useState } from "react";
 import { Text } from "react-native";
+import AppErrorAlert from "@/components/AppErrorAlert";
 import AuthCard from "@/components/auth/AuthCard";
 import AuthHeader from "@/components/auth/AuthHeader";
 import AuthPrimaryButton from "@/components/auth/AuthPrimaryButton";
 import AuthScreen from "@/components/auth/AuthScreen";
 import AuthTextField from "@/components/auth/AuthTextField";
 import SocialAuthButtons from "@/components/auth/SocialAuthButtons";
+import { login } from "@/services/authApi";
 import styles from "@/styles/authStyles";
 import { LoginErrors, validateLoginForm } from "@/validators/loginValidator";
 
@@ -18,6 +20,8 @@ type TouchedFields = {
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loginError, setLoginError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [touched, setTouched] = useState<TouchedFields>({
     email: false,
     password: false,
@@ -36,15 +40,17 @@ export default function LoginScreen() {
 
   function handleEmailChange(value: string) {
     markAsTouched("email");
+    setLoginError("");
     setEmail(value);
   }
 
   function handlePasswordChange(value: string) {
     markAsTouched("password");
+    setLoginError("");
     setPassword(value);
   }
 
-  function handleLogin() {
+  async function handleLogin() {
     setTouched({
       email: true,
       password: true,
@@ -53,6 +59,19 @@ export default function LoginScreen() {
     if (!isFormValid) {
       return;
     }
+
+    setLoginError("");
+    setIsSubmitting(true);
+
+    try {
+      await login({ email, password });
+    } catch (error) {
+      setLoginError(
+        error instanceof Error ? error.message : "Nao foi possivel entrar.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -60,6 +79,8 @@ export default function LoginScreen() {
       <AuthHeader title="Welcome Back" accent="Dear Friend" />
 
       <AuthCard title="LOGIN">
+        <AppErrorAlert message={loginError} />
+
         <AuthTextField
           label="Email"
           value={email}
@@ -82,7 +103,11 @@ export default function LoginScreen() {
 
         <Text style={styles.forgot}>Esqueceu sua senha ?</Text>
 
-        <AuthPrimaryButton label="LOGIN" onPress={handleLogin} disabled={!isFormValid} />
+        <AuthPrimaryButton
+          label={isSubmitting ? "ENTRANDO..." : "LOGIN"}
+          onPress={handleLogin}
+          disabled={!isFormValid || isSubmitting}
+        />
       </AuthCard>
 
       <SocialAuthButtons />
