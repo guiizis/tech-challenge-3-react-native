@@ -7,11 +7,19 @@ export default StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  overlay: {
+  keyboardAvoidingView: {
     flex: 1,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  overlay: {
+    flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
+    paddingVertical: 32,
+    paddingBottom: 96,
   },
   titleContainer: {
     alignItems: "center",
@@ -55,17 +63,31 @@ export default StyleSheet.create({
     marginBottom: 6,
     marginTop: 8,
   },
-  input: {
+  inputContainer: {
     width: "100%",
     backgroundColor: colors.inputBackground,
     borderWidth: 1,
     borderColor: colors.inputBorder,
-    color: colors.textLight,
-    padding: 12,
     borderRadius: 8,
+    flexDirection: "row",
+    alignItems: "center",
   },
   inputError: {
     borderColor: colors.borderError,
+  },
+  input: {
+    flex: 1,
+    color: colors.textLight,
+    padding: 12,
+  },
+  inputWithTrailingIcon: {
+    paddingRight: 4,
+  },
+  inputIconButton: {
+    width: 44,
+    height: 44,
+    justifyContent: "center",
+    alignItems: "center",
   },
   errorText: {
     color: colors.textError,
