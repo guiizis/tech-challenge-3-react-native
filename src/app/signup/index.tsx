@@ -4,12 +4,12 @@ import AuthHeader from "@/components/auth/AuthHeader";
 import AuthPrimaryButton from "@/components/auth/AuthPrimaryButton";
 import AuthScreen from "@/components/auth/AuthScreen";
 import AuthTextField from "@/components/auth/AuthTextField";
-import { signup } from "@/services/authApi";
+import { useAuth } from "@/context/AuthContext";
 import styles from "@/styles/authStyles";
 import colors from "@/styles/colors";
 import { SignupErrors, validateSignupForm } from "@/validators/signupValidator";
 import { FontAwesome5 } from "@expo/vector-icons";
-import { Link, useRouter } from "expo-router";
+import { Href, Link, useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
@@ -20,8 +20,11 @@ type TouchedFields = {
   acceptedPolicy: boolean;
 };
 
+const homeRoute = "/home" as Href;
+
 export default function SignupScreen() {
   const router = useRouter();
+  const { signup } = useAuth();
   const redirectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -96,10 +99,10 @@ export default function SignupScreen() {
 
     try {
       await signup({ name, email, password });
-      setSignupSuccess("Cadastro realizado com sucesso. Redirecionando para o login...");
+      setSignupSuccess("Cadastro realizado com sucesso. Redirecionando...");
       redirectTimeoutRef.current = setTimeout(() => {
-        router.replace("/login");
-      }, 4000);
+        router.replace(homeRoute);
+      }, 1200);
     } catch (error) {
       setSignupError(
         error instanceof Error ? error.message : "Nao foi possivel criar o cadastro.",

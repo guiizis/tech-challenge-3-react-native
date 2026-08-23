@@ -4,7 +4,7 @@ import AuthHeader from "@/components/auth/AuthHeader";
 import AuthPrimaryButton from "@/components/auth/AuthPrimaryButton";
 import AuthScreen from "@/components/auth/AuthScreen";
 import AuthTextField from "@/components/auth/AuthTextField";
-import { changePassword } from "@/services/authApi";
+import { useAuth } from "@/context/AuthContext";
 import {
   PasswordRecoveryErrors,
   validatePasswordRecoveryForm,
@@ -22,6 +22,7 @@ type TouchedFields = {
 
 export default function ForgotPasswordScreen() {
   const router = useRouter();
+  const { changePassword } = useAuth();
   const redirectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

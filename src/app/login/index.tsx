@@ -1,4 +1,5 @@
-import { Link } from "expo-router";
+import { useAuth } from "@/context/AuthContext";
+import { Href, Link, useRouter } from "expo-router";
 import { useState } from "react";
 import { Text } from "react-native";
 import AppAlert from "@/components/AppAlert";
@@ -8,7 +9,6 @@ import AuthPrimaryButton from "@/components/auth/AuthPrimaryButton";
 import AuthScreen from "@/components/auth/AuthScreen";
 import AuthTextField from "@/components/auth/AuthTextField";
 import SocialAuthButtons from "@/components/auth/SocialAuthButtons";
-import { login } from "@/services/authApi";
 import styles from "@/styles/authStyles";
 import { LoginErrors, validateLoginForm } from "@/validators/loginValidator";
 
@@ -17,7 +17,11 @@ type TouchedFields = {
   password: boolean;
 };
 
+const homeRoute = "/home" as Href;
+
 export default function LoginScreen() {
+  const router = useRouter();
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
@@ -65,6 +69,7 @@ export default function LoginScreen() {
 
     try {
       await login({ email, password });
+      router.replace(homeRoute);
     } catch (error) {
       setLoginError(
         error instanceof Error ? error.message : "Nao foi possivel entrar.",
