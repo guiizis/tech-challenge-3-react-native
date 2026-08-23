@@ -67,6 +67,7 @@ server.post("/signup", (request, response) => {
     id: accountId,
     userId,
     type: "Conta Corrente",
+    initialBalance: 0,
     balance: 0,
     currency: "BRL",
     agency: "0001",

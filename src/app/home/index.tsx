@@ -38,6 +38,7 @@ export default function HomeScreen() {
   const [isBalanceVisible, setIsBalanceVisible] = useState(true);
   const {
     account,
+    currentBalance,
     filteredTransactions,
     filter,
     setFilter,
@@ -49,18 +50,14 @@ export default function HomeScreen() {
   } = useFinance();
 
   const balance = useMemo(
-    () => formatCurrency(account?.balance ?? 0),
-    [account?.balance],
+    () => formatCurrency(currentBalance),
+    [currentBalance],
   );
-  const displayedBalance = isBalanceVisible ? balance : "R$ ••••••";
+  const displayedBalance = isBalanceVisible ? balance : "R$ ******";
   const firstName = useMemo(() => {
     return user?.name.trim().split(/\s+/)[0] ?? "Usuario";
   }, [user?.name]);
   const balanceCardDate = useMemo(() => formatTodayLabel(), []);
-  const latestTransactions = useMemo(() => {
-    return filteredTransactions.slice(0, 2);
-  }, [filteredTransactions]);
-
   if (!user) {
     return <Redirect href="/login" />;
   }
@@ -130,7 +127,7 @@ export default function HomeScreen() {
       </View>
 
       <View style={styles.transactions}>
-        {latestTransactions.map((transaction) => (
+        {filteredTransactions.map((transaction) => (
           <View key={transaction.id} style={styles.transactionCard}>
             <View style={styles.transactionIcon}>
               <FontAwesome5
