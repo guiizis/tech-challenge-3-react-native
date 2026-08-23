@@ -24,6 +24,7 @@ export default {
   appBackground: "#F5F6FB",
   surface: "#FFFFFF",
   surfaceMuted: "#E5E7EB",
+  iconBackground: "#ECEEFA",
   textDark: "#111827",
   textSoft: "#7B7F95",
   textSubtle: "#8B90A1",

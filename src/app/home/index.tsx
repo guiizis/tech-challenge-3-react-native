@@ -3,26 +3,40 @@ import { useFinance } from "@/context/FinanceContext";
 import colors from "@/styles/colors";
 import styles from "@/styles/homeStyles";
 import { TransactionType } from "@/types/finance";
+import {
+  formatCurrency,
+  formatShortDate,
+  formatTodayLabel,
+} from "@/utils/formatters";
+import { FontAwesome5 } from "@expo/vector-icons";
 import { Redirect } from "expo-router";
-import { useMemo } from "react";
-import { ActivityIndicator, ScrollView, Text, View } from "react-native";
-
-function formatCurrency(value: number) {
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(value);
-}
+import { useMemo, useState } from "react";
+import {
+  ActivityIndicator,
+  Image,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 function getAmountStyle(type: TransactionType) {
   return type === "income" ? styles.incomeAmount : styles.expenseAmount;
 }
 
+function getTransactionIcon(type: TransactionType, category: string) {
+  if (category.toLowerCase() === "subscription") {
+    return "music";
+  }
+
+  return type === "income" ? "briefcase" : "credit-card";
+}
+
 export default function HomeScreen() {
   const { user, logout } = useAuth();
+  const [isBalanceVisible, setIsBalanceVisible] = useState(true);
   const {
     account,
-    card,
     filteredTransactions,
     filter,
     setFilter,
@@ -37,9 +51,14 @@ export default function HomeScreen() {
     () => formatCurrency(account?.balance ?? 0),
     [account?.balance],
   );
+  const displayedBalance = isBalanceVisible ? balance : "R$ ••••••";
   const firstName = useMemo(() => {
     return user?.name.trim().split(/\s+/)[0] ?? "Usuario";
   }, [user?.name]);
+  const balanceCardDate = useMemo(() => formatTodayLabel(), []);
+  const latestTransactions = useMemo(() => {
+    return filteredTransactions.slice(0, 2);
+  }, [filteredTransactions]);
 
   if (!user) {
     return <Redirect href="/login" />;
@@ -47,18 +66,42 @@ export default function HomeScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <View>
-        <Text style={styles.headerLabel}>Welcome Back,</Text>
-        <Text style={styles.headerName}>{user.name}</Text>
+      <View style={styles.header}>
+        <View>
+          <Text style={styles.headerLabel}>Welcome Back,</Text>
+          <Text style={styles.headerName}>{user.name}</Text>
+        </View>
+
+        <Image source={{ uri: user.avatarUrl }} style={styles.avatar} />
       </View>
 
       <View style={styles.balanceCard}>
-        <Text style={styles.balanceGreeting}>Ola,{firstName}!</Text>
+        <View style={styles.balanceHeader}>
+          <Text style={styles.balanceGreeting}>Ola, {firstName}!</Text>
+          <Text style={styles.balanceDate}>{balanceCardDate}</Text>
+        </View>
+
+        <View style={styles.balanceLabelRow}>
+          <Text style={styles.balanceLabel}>Saldo</Text>
+          <TouchableOpacity
+            accessibilityLabel={
+              isBalanceVisible ? "Esconder saldo" : "Mostrar saldo"
+            }
+            accessibilityRole="button"
+            onPress={() => setIsBalanceVisible((current) => !current)}
+            style={styles.balanceVisibilityButton}
+          >
+            <FontAwesome5
+              name={isBalanceVisible ? "eye" : "eye-slash"}
+              size={16}
+              color={colors.textLight}
+            />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.balanceDivider} />
+
         <Text style={styles.accountType}>{account?.type}</Text>
-        <Text style={styles.balance}>{balance}</Text>
-        {card ? (
-          <Text style={styles.cardInfo}>Cartao final {card.lastFourDigits}</Text>
-        ) : null}
+        <Text style={styles.balance}>{displayedBalance}</Text>
       </View>
 
       {isLoading ? <ActivityIndicator color={colors.financePrimary} /> : null}
@@ -86,21 +129,37 @@ export default function HomeScreen() {
       </View>
 
       <View style={styles.transactions}>
-        {filteredTransactions.map((transaction) => (
+        {latestTransactions.map((transaction) => (
           <View key={transaction.id} style={styles.transactionCard}>
-            <Text style={styles.transactionTitle}>{transaction.title}</Text>
-            <Text style={styles.transactionCategory}>
-              {transaction.category}
-            </Text>
-            <Text
-              style={[
-                styles.transactionAmount,
-                getAmountStyle(transaction.type),
-              ]}
-            >
-              {transaction.type === "income" ? "+" : "-"}{" "}
-              {formatCurrency(transaction.amount)}
-            </Text>
+            <View style={styles.transactionIcon}>
+              <FontAwesome5
+                name={getTransactionIcon(transaction.type, transaction.category)}
+                size={18}
+                color={colors.financePrimary}
+              />
+            </View>
+
+            <View style={styles.transactionInfo}>
+              <Text style={styles.transactionTitle}>{transaction.title}</Text>
+              <Text style={styles.transactionCategory}>
+                {transaction.category}
+              </Text>
+            </View>
+
+            <View style={styles.transactionMeta}>
+              <Text
+                style={[
+                  styles.transactionAmount,
+                  getAmountStyle(transaction.type),
+                ]}
+              >
+                {transaction.type === "income" ? "+" : "-"}{" "}
+                {formatCurrency(transaction.amount)}
+              </Text>
+              <Text style={styles.transactionDate}>
+                {formatShortDate(transaction.date)}
+              </Text>
+            </View>
           </View>
         ))}
       </View>

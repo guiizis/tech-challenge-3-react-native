@@ -4,9 +4,14 @@ import colors from "./colors";
 export default StyleSheet.create({
   container: {
     backgroundColor: colors.appBackground,
-    gap: 16,
-    padding: 24,
-    paddingTop: 64,
+    gap: 18,
+    padding: 16,
+    paddingTop: 28,
+  },
+  header: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   headerLabel: {
     color: colors.textSoft,
@@ -17,50 +22,107 @@ export default StyleSheet.create({
     fontSize: 18,
     fontWeight: "700",
   },
+  avatar: {
+    backgroundColor: colors.surface,
+    borderRadius: 8,
+    height: 48,
+    width: 48,
+  },
   balanceCard: {
     backgroundColor: colors.financePrimary,
     borderRadius: 8,
-    gap: 10,
-    padding: 20,
+    gap: 12,
+    minHeight: 252,
+    padding: 16,
+  },
+  balanceHeader: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   balanceGreeting: {
     color: colors.textLight,
-    fontSize: 16,
+    fontSize: 18,
+  },
+  balanceDate: {
+    color: colors.textLight,
+    fontSize: 10,
+  },
+  balanceLabelRow: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 10,
+    marginTop: 18,
+  },
+  balanceLabel: {
+    color: colors.textLight,
+    fontSize: 20,
+    fontWeight: "800",
+  },
+  balanceVisibilityButton: {
+    alignItems: "center",
+    height: 32,
+    justifyContent: "center",
+    width: 32,
+  },
+  balanceDivider: {
+    backgroundColor: colors.textLight,
+    height: 2,
+    width: 122,
   },
   accountType: {
     color: colors.textLight,
-    fontSize: 14,
+    fontSize: 18,
+    fontWeight: "800",
   },
   balance: {
     color: colors.textLight,
-    fontSize: 36,
+    fontSize: 40,
     fontWeight: "800",
-  },
-  cardInfo: {
-    color: colors.financePrimarySoft,
-    fontSize: 12,
   },
   error: {
     color: colors.danger,
   },
   filters: {
+    alignItems: "center",
     flexDirection: "row",
+    justifyContent: "space-between",
     gap: 12,
+    paddingHorizontal: 12,
   },
   filter: {
     color: colors.textInactive,
+    fontSize: 14,
   },
   filterActive: {
     color: colors.financePrimary,
     fontWeight: "700",
   },
   transactions: {
-    gap: 12,
-  },
-  transactionCard: {
     backgroundColor: colors.surface,
     borderRadius: 8,
-    padding: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
+  transactionCard: {
+    alignItems: "center",
+    borderBottomColor: colors.appBackground,
+    borderBottomWidth: 1,
+    flexDirection: "row",
+    gap: 14,
+    paddingVertical: 12,
+  },
+  transactionIcon: {
+    alignItems: "center",
+    backgroundColor: colors.iconBackground,
+    borderRadius: 6,
+    height: 38,
+    justifyContent: "center",
+    width: 42,
+  },
+  transactionInfo: {
+    flex: 1,
+    gap: 4,
   },
   transactionTitle: {
     color: colors.textDark,
@@ -71,6 +133,7 @@ export default StyleSheet.create({
   },
   transactionAmount: {
     fontWeight: "700",
+    textAlign: "right",
   },
   incomeAmount: {
     color: colors.income,
@@ -78,10 +141,19 @@ export default StyleSheet.create({
   expenseAmount: {
     color: colors.expense,
   },
+  transactionMeta: {
+    alignItems: "flex-end",
+    gap: 4,
+  },
+  transactionDate: {
+    color: colors.textSubtle,
+    fontSize: 12,
+  },
   overview: {
     backgroundColor: colors.surfaceMuted,
-    borderRadius: 8,
-    padding: 18,
+    borderRadius: 28,
+    minHeight: 274,
+    padding: 16,
   },
   overviewTitle: {
     color: colors.textDark,
@@ -101,4 +173,3 @@ export default StyleSheet.create({
     fontWeight: "700",
   },
 });
-
