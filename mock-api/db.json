@@ -185,6 +185,28 @@
       "amount": 32,
       "date": "2019-09-10",
       "description": "Receita de anuncios"
+    },
+    {
+      "id": 1787529015568,
+      "userId": 1787428672211,
+      "accountId": 1787428672212,
+      "type": "income",
+      "title": "Teste",
+      "category": "Income",
+      "amount": 12364.64,
+      "date": "2023-08-25",
+      "description": ""
+    },
+    {
+      "id": 1787529043705,
+      "userId": 1787428672211,
+      "accountId": 1787428672212,
+      "type": "expense",
+      "title": "Teste de crédito",
+      "category": "Expense",
+      "amount": 3600,
+      "date": "2026-08-23",
+      "description": ""
     }
   ]
 }

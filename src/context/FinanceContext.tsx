@@ -5,6 +5,7 @@ import {
   getAccountByUserId,
   getCardByUserId,
   getTransactionsByUserId,
+  searchTransactionsByUserId,
   updateTransaction as updateTransactionRequest,
 } from "@/services/financeApi";
 import {
@@ -28,9 +29,11 @@ type FinanceState = {
   account: Account | null;
   card: Card | null;
   transactions: Transaction[];
+  searchResults: Transaction[] | null;
   selectedTransaction: Transaction | null;
   filter: TransactionFilter;
   isLoading: boolean;
+  isSearching: boolean;
   error: string;
 };
 
@@ -46,6 +49,10 @@ type FinanceAction =
     }
   | { type: "LOAD_FINANCE_ERROR"; payload: string }
   | { type: "SET_TRANSACTION_FILTER"; payload: TransactionFilter }
+  | { type: "SEARCH_TRANSACTIONS_START" }
+  | { type: "SEARCH_TRANSACTIONS_SUCCESS"; payload: Transaction[] }
+  | { type: "SEARCH_TRANSACTIONS_ERROR"; payload: string }
+  | { type: "CLEAR_TRANSACTION_SEARCH" }
   | { type: "CREATE_TRANSACTION_SUCCESS"; payload: Transaction }
   | { type: "UPDATE_TRANSACTION_SUCCESS"; payload: Transaction }
   | { type: "DELETE_TRANSACTION_SUCCESS"; payload: number }
@@ -60,6 +67,11 @@ type FinanceContextValue = FinanceState & {
   expenseTotal: number;
   overviewPercentage: number;
   setFilter: (filter: TransactionFilter) => void;
+  searchTransactions: (
+    query: string,
+    type?: TransactionFilter,
+  ) => Promise<void>;
+  clearTransactionSearch: () => void;
   refreshFinance: () => Promise<void>;
   createTransaction: (input: TransactionInput) => Promise<Transaction>;
   updateTransaction: (
@@ -75,9 +87,11 @@ const initialState: FinanceState = {
   account: null,
   card: null,
   transactions: [],
+  searchResults: null,
   selectedTransaction: null,
   filter: "all",
   isLoading: false,
+  isSearching: false,
   error: "",
 };
 
@@ -94,6 +108,7 @@ function financeReducer(
       return {
         ...state,
         ...action.payload,
+        searchResults: null,
         isLoading: false,
         error: "",
       };
@@ -101,9 +116,23 @@ function financeReducer(
       return { ...state, isLoading: false, error: action.payload };
     case "SET_TRANSACTION_FILTER":
       return { ...state, filter: action.payload };
+    case "SEARCH_TRANSACTIONS_START":
+      return { ...state, isSearching: true, error: "" };
+    case "SEARCH_TRANSACTIONS_SUCCESS":
+      return {
+        ...state,
+        searchResults: action.payload,
+        isSearching: false,
+        error: "",
+      };
+    case "SEARCH_TRANSACTIONS_ERROR":
+      return { ...state, isSearching: false, error: action.payload };
+    case "CLEAR_TRANSACTION_SEARCH":
+      return { ...state, searchResults: null, isSearching: false, error: "" };
     case "CREATE_TRANSACTION_SUCCESS":
       return {
         ...state,
+        searchResults: null,
         transactions: [action.payload, ...state.transactions],
       };
     case "UPDATE_TRANSACTION_SUCCESS":
@@ -112,6 +141,7 @@ function financeReducer(
         transactions: state.transactions.map((transaction) =>
           transaction.id === action.payload.id ? action.payload : transaction,
         ),
+        searchResults: null,
         selectedTransaction:
           state.selectedTransaction?.id === action.payload.id
             ? action.payload
@@ -123,6 +153,7 @@ function financeReducer(
         transactions: state.transactions.filter(
           (transaction) => transaction.id !== action.payload,
         ),
+        searchResults: null,
         selectedTransaction:
           state.selectedTransaction?.id === action.payload
             ? null
@@ -201,6 +232,47 @@ export function FinanceProvider({ children }: PropsWithChildren) {
     dispatch({ type: "SET_TRANSACTION_FILTER", payload: filter });
   }
 
+  const searchTransactions = useCallback(async (
+    query: string,
+    type: TransactionFilter = state.filter,
+  ) => {
+    if (!user) {
+      dispatch({ type: "CLEAR_TRANSACTION_SEARCH" });
+      return;
+    }
+
+    const normalizedQuery = query.trim();
+
+    if (!normalizedQuery) {
+      dispatch({ type: "CLEAR_TRANSACTION_SEARCH" });
+      return;
+    }
+
+    dispatch({ type: "SEARCH_TRANSACTIONS_START" });
+
+    try {
+      const transactions = await searchTransactionsByUserId(
+        user.id,
+        normalizedQuery,
+        type,
+      );
+
+      dispatch({ type: "SEARCH_TRANSACTIONS_SUCCESS", payload: transactions });
+    } catch (error) {
+      dispatch({
+        type: "SEARCH_TRANSACTIONS_ERROR",
+        payload:
+          error instanceof Error
+            ? error.message
+            : "Nao foi possivel pesquisar as transacoes.",
+      });
+    }
+  }, [state.filter, user]);
+
+  const clearTransactionSearch = useCallback(() => {
+    dispatch({ type: "CLEAR_TRANSACTION_SEARCH" });
+  }, []);
+
   function selectTransaction(transaction: Transaction) {
     dispatch({ type: "SELECT_TRANSACTION", payload: transaction });
   }
@@ -210,14 +282,16 @@ export function FinanceProvider({ children }: PropsWithChildren) {
   }
 
   const filteredTransactions = useMemo(() => {
+    const transactions = state.searchResults ?? state.transactions;
+
     if (state.filter === "all") {
-      return state.transactions;
+      return transactions;
     }
 
-    return state.transactions.filter(
+    return transactions.filter(
       (transaction) => transaction.type === state.filter,
     );
-  }, [state.filter, state.transactions]);
+  }, [state.filter, state.searchResults, state.transactions]);
 
   const { incomeTotal, expenseTotal } = useMemo(() => {
     return state.transactions.reduce(
@@ -264,6 +338,8 @@ export function FinanceProvider({ children }: PropsWithChildren) {
       expenseTotal,
       overviewPercentage,
       setFilter,
+      searchTransactions,
+      clearTransactionSearch,
       refreshFinance,
       createTransaction,
       updateTransaction,
@@ -278,6 +354,8 @@ export function FinanceProvider({ children }: PropsWithChildren) {
       incomeTotal,
       overviewPercentage,
       refreshFinance,
+      searchTransactions,
+      clearTransactionSearch,
       state,
     ],
   );

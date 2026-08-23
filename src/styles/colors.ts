@@ -4,6 +4,7 @@ export default {
   gradientRight: "#4E7FFF", // azul do botão LOGIN
   disabledGradientLeft: "rgba(184,184,199,0.35)",
   disabledGradientRight: "rgba(184,184,199,0.25)",
+  modalBackdrop: "rgba(0,0,0,0.45)",
   textLight: "#FFFFFF",
   textMuted: "#B8B8C7",
   textPlaceholder: "#AAAAAA",

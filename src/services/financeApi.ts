@@ -3,6 +3,7 @@ import {
   Account,
   Card,
   Transaction,
+  TransactionFilter,
   TransactionInput,
 } from "@/types/finance";
 
@@ -44,6 +45,24 @@ export async function getTransactionsByUserId(userId: number) {
   return parseApiResponse<Transaction[]>(
     response,
     "Nao foi possivel carregar as transacoes.",
+  );
+}
+
+export async function searchTransactionsByUserId(
+  userId: number,
+  query: string,
+  type: TransactionFilter = "all",
+) {
+  const params = new URLSearchParams({
+    userId: String(userId),
+    q: query.trim(),
+    type,
+  });
+  const response = await fetch(`${env.apiUrl}/transactions/search?${params}`);
+
+  return parseApiResponse<Transaction[]>(
+    response,
+    "Nao foi possivel pesquisar as transacoes.",
   );
 }
 
@@ -90,4 +109,3 @@ export async function deleteTransaction(transactionId: number) {
     "Nao foi possivel remover a transacao.",
   );
 }
-

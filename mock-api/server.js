@@ -104,6 +104,90 @@ server.patch("/password", (request, response) => {
   response.status(200).json({ user: safeUser });
 });
 
+server.get("/transactions/search", (request, response) => {
+  const { userId, q, type } = request.query;
+  const normalizedQuery = String(q ?? "").trim().toLowerCase();
+  const normalizedType = String(type ?? "").trim();
+  const numericUserId = Number(userId);
+
+  if (!numericUserId) {
+    response.status(400).json({ message: "Usuario invalido." });
+    return;
+  }
+
+  const transactions = router.db
+    .get("transactions")
+    .filter((transaction) => {
+      const belongsToUser = transaction.userId === numericUserId;
+      const matchesType =
+        normalizedType === "" ||
+        normalizedType === "all" ||
+        transaction.type === normalizedType;
+      const matchesQuery =
+        normalizedQuery === "" ||
+        String(transaction.title ?? "").toLowerCase().includes(normalizedQuery);
+
+      return belongsToUser && matchesType && matchesQuery;
+    })
+    .orderBy(["date"], ["desc"])
+    .value();
+
+  response.status(200).json(transactions);
+});
+
+server.post("/transactions", (request, response) => {
+  const { userId, accountId, type, title, category, amount, date, description } =
+    request.body;
+  const numericUserId = Number(userId);
+  const numericAmount = Number(amount);
+
+  if (!numericUserId) {
+    response.status(400).json({ message: "Usuario invalido." });
+    return;
+  }
+
+  if (type !== "income" && type !== "expense") {
+    response.status(400).json({ message: "Tipo de transacao invalido." });
+    return;
+  }
+
+  if (!String(title ?? "").trim()) {
+    response.status(400).json({ message: "Informe o nome da transacao." });
+    return;
+  }
+
+  if (!Number.isFinite(numericAmount) || numericAmount <= 0) {
+    response.status(400).json({ message: "Informe um valor valido." });
+    return;
+  }
+
+  const database = router.db;
+  const account =
+    database.get("accounts").find({ id: Number(accountId) }).value() ??
+    database.get("accounts").find({ userId: numericUserId }).value();
+
+  if (!account) {
+    response.status(404).json({ message: "Conta nao encontrada." });
+    return;
+  }
+
+  const transaction = {
+    id: Date.now(),
+    userId: numericUserId,
+    accountId: account.id,
+    type,
+    title: String(title).trim(),
+    category: String(category ?? "").trim() || "Geral",
+    amount: numericAmount,
+    date: String(date ?? "").trim() || new Date().toISOString().slice(0, 10),
+    description: String(description ?? "").trim(),
+  };
+
+  database.get("transactions").push(transaction).write();
+
+  response.status(201).json(transaction);
+});
+
 server.use(router);
 
 server.listen(port, () => {

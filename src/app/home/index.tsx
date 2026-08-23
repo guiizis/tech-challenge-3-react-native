@@ -6,23 +6,35 @@ import styles from "@/styles/homeStyles";
 import { TransactionType } from "@/types/finance";
 import {
   formatCurrency,
+  formatDateInput,
+  formatMoneyInput,
+  parseBrazilianDateInput,
+  parseMoneyInput,
   formatShortDate,
   formatTodayLabel,
 } from "@/utils/formatters";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { Redirect } from "expo-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Image,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
   ScrollView,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 
 function getAmountStyle(type: TransactionType) {
   return type === "income" ? styles.incomeAmount : styles.expenseAmount;
+}
+
+function getTransactionTypeLabel(type: TransactionType) {
+  return type === "income" ? "Crédito" : "Débito";
 }
 
 function getTransactionIcon(type: TransactionType, category: string) {
@@ -33,19 +45,43 @@ function getTransactionIcon(type: TransactionType, category: string) {
   return type === "income" ? "briefcase" : "credit-card";
 }
 
+function getTodayInputDate() {
+  const today = new Date();
+  const day = String(today.getDate()).padStart(2, "0");
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const year = today.getFullYear();
+
+  return `${day}/${month}/${year}`;
+}
+
 export default function HomeScreen() {
   const { user, logout } = useAuth();
   const [isBalanceVisible, setIsBalanceVisible] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
+  const [newTransactionType, setNewTransactionType] =
+    useState<TransactionType>("income");
+  const [newTransactionTitle, setNewTransactionTitle] = useState("");
+  const [newTransactionAmount, setNewTransactionAmount] = useState("");
+  const [newTransactionDate, setNewTransactionDate] =
+    useState(getTodayInputDate);
+  const [newTransactionDescription, setNewTransactionDescription] =
+    useState("");
+  const [newTransactionError, setNewTransactionError] = useState("");
   const {
     account,
     currentBalance,
     filteredTransactions,
     filter,
     setFilter,
+    searchTransactions,
+    clearTransactionSearch,
+    createTransaction,
     incomeTotal,
     expenseTotal,
     overviewPercentage,
     isLoading,
+    isSearching,
     error,
   } = useFinance();
 
@@ -58,6 +94,99 @@ export default function HomeScreen() {
     return user?.name.trim().split(/\s+/)[0] ?? "Usuario";
   }, [user?.name]);
   const balanceCardDate = useMemo(() => formatTodayLabel(), []);
+
+  function resetNewTransactionForm() {
+    setNewTransactionType("income");
+    setNewTransactionTitle("");
+    setNewTransactionAmount("");
+    setNewTransactionDate(getTodayInputDate());
+    setNewTransactionDescription("");
+    setNewTransactionError("");
+  }
+
+  function closeCreateModal() {
+    setIsCreateModalVisible(false);
+    resetNewTransactionForm();
+  }
+
+  function handleFilterChange(nextFilter: "all" | TransactionType) {
+    setFilter(nextFilter);
+
+    if (nextFilter !== "all") {
+      setSearchTerm("");
+      clearTransactionSearch();
+    }
+  }
+
+  function handleNewTransactionAmountChange(value: string) {
+    setNewTransactionAmount(formatMoneyInput(value));
+  }
+
+  function handleNewTransactionDateChange(value: string) {
+    setNewTransactionDate(formatDateInput(value));
+  }
+
+  async function handleCreateTransaction() {
+    if (!user || !account) {
+      setNewTransactionError("Não foi possível identificar a conta.");
+      return;
+    }
+
+    const amount = parseMoneyInput(newTransactionAmount);
+
+    if (!newTransactionTitle.trim()) {
+      setNewTransactionError("Informe o nome da transação.");
+      return;
+    }
+
+    if (!Number.isFinite(amount) || amount <= 0) {
+      setNewTransactionError("Informe um valor valido.");
+      return;
+    }
+
+    setNewTransactionError("");
+
+    try {
+      await createTransaction({
+        userId: user.id,
+        accountId: account.id,
+        type: newTransactionType,
+        title: newTransactionTitle,
+        category: newTransactionType === "income" ? "Income" : "Expense",
+        amount,
+        date: parseBrazilianDateInput(newTransactionDate),
+        description: newTransactionDescription,
+      });
+
+      setSearchTerm("");
+      clearTransactionSearch();
+      closeCreateModal();
+    } catch (error) {
+      setNewTransactionError(
+        error instanceof Error
+          ? error.message
+          : "Não foi possível criar a transação.",
+      );
+    }
+  }
+
+  useEffect(() => {
+    if (filter !== "all") {
+      return;
+    }
+
+    const timeoutId = setTimeout(() => {
+      if (searchTerm.trim()) {
+        searchTransactions(searchTerm, "all");
+        return;
+      }
+
+      clearTransactionSearch();
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [clearTransactionSearch, filter, searchTerm, searchTransactions]);
+
   if (!user) {
     return <Redirect href="/login" />;
   }
@@ -107,26 +236,65 @@ export default function HomeScreen() {
 
       <View style={styles.filters}>
         <Text
-          onPress={() => setFilter("income")}
+          onPress={() => handleFilterChange("income")}
           style={[styles.filter, filter === "income" && styles.filterActive]}
         >
           Entradas
         </Text>
         <Text
-          onPress={() => setFilter("expense")}
+          onPress={() => handleFilterChange("expense")}
           style={[styles.filter, filter === "expense" && styles.filterActive]}
         >
-          Saidas
+          Saídas
         </Text>
         <Text
-          onPress={() => setFilter("all")}
+          onPress={() => handleFilterChange("all")}
           style={[styles.filter, filter === "all" && styles.filterActive]}
         >
-          Transacoes
+          Transações
         </Text>
       </View>
 
+      {filter === "all" ? (
+        <View style={styles.searchRow}>
+          <TouchableOpacity
+            accessibilityLabel="Adicionar transação"
+            accessibilityRole="button"
+            onPress={() => setIsCreateModalVisible(true)}
+            style={styles.addTransactionButton}
+          >
+            <FontAwesome5 name="plus" size={24} color={colors.financePrimary} />
+          </TouchableOpacity>
+
+          <View style={styles.searchBox}>
+            <TextInput
+              accessibilityLabel="Pesquisar transação"
+              onChangeText={setSearchTerm}
+              placeholder="Pesquisar"
+              placeholderTextColor={colors.financePrimary}
+              style={styles.searchInput}
+              value={searchTerm}
+            />
+            {isSearching ? (
+              <ActivityIndicator color={colors.financePrimary} size="small" />
+            ) : (
+              <FontAwesome5
+                name="search"
+                size={24}
+                color={colors.financePrimary}
+              />
+            )}
+          </View>
+        </View>
+      ) : null}
+
       <View style={styles.transactions}>
+        {filteredTransactions.length === 0 ? (
+          <Text style={styles.emptyTransactions}>
+            Nenhum resultado encontrado.
+          </Text>
+        ) : null}
+
         {filteredTransactions.map((transaction) => (
           <View key={transaction.id} style={styles.transactionCard}>
             <View style={styles.transactionIcon}>
@@ -140,7 +308,7 @@ export default function HomeScreen() {
             <View style={styles.transactionInfo}>
               <Text style={styles.transactionTitle}>{transaction.title}</Text>
               <Text style={styles.transactionCategory}>
-                {transaction.category}
+                {getTransactionTypeLabel(transaction.type)}
               </Text>
             </View>
 
@@ -166,7 +334,7 @@ export default function HomeScreen() {
         <Text style={styles.overviewTitle}>Overview</Text>
         <OverviewDonutChart percentage={overviewPercentage} />
         <Text style={styles.overviewDescription}>
-          Entradas {formatCurrency(incomeTotal)} / Saidas{" "}
+          Entradas {formatCurrency(incomeTotal)} / Saídas{" "}
           {formatCurrency(expenseTotal)}
         </Text>
       </View>
@@ -174,6 +342,184 @@ export default function HomeScreen() {
       <Text onPress={logout} style={styles.logout}>
         Sair
       </Text>
+
+      <Modal
+        animationType="slide"
+        onRequestClose={closeCreateModal}
+        transparent
+        visible={isCreateModalVisible}
+      >
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 24 : 0}
+          style={styles.modalBackdrop}
+        >
+          <View style={styles.transactionModalSheet}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Nova Transação</Text>
+              <TouchableOpacity
+                accessibilityLabel="Fechar nova transação"
+                accessibilityRole="button"
+                onPress={closeCreateModal}
+              >
+                <FontAwesome5
+                  name="times"
+                  size={18}
+                  color={colors.financePrimary}
+                />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView
+              contentContainerStyle={styles.modalContent}
+              keyboardShouldPersistTaps="handled"
+              showsVerticalScrollIndicator={false}
+            >
+            <View style={styles.transactionTypeControl}>
+              <TouchableOpacity
+                accessibilityRole="button"
+                onPress={() => setNewTransactionType("income")}
+                style={[
+                  styles.transactionTypeOption,
+                  newTransactionType === "income" &&
+                    styles.incomeTypeOptionActive,
+                ]}
+              >
+                <FontAwesome5
+                  name="plus-circle"
+                  size={13}
+                  color={
+                    newTransactionType === "income"
+                      ? colors.income
+                      : colors.textInactive
+                  }
+                />
+                <Text
+                  style={[
+                    styles.transactionTypeText,
+                    newTransactionType === "income" &&
+                      styles.incomeTypeOptionTextActive,
+                  ]}
+                >
+                  Entrada
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                accessibilityRole="button"
+                onPress={() => setNewTransactionType("expense")}
+                style={[
+                  styles.transactionTypeOption,
+                  newTransactionType === "expense" &&
+                    styles.expenseTypeOptionActive,
+                ]}
+              >
+                <FontAwesome5
+                  name="arrow-circle-down"
+                  size={13}
+                  color={
+                    newTransactionType === "expense"
+                      ? colors.expense
+                      : colors.textInactive
+                  }
+                />
+                <Text
+                  style={[
+                    styles.transactionTypeText,
+                    newTransactionType === "expense" &&
+                      styles.expenseTypeOptionTextActive,
+                  ]}
+                >
+                  Saída
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            {newTransactionError ? (
+              <Text style={styles.modalError}>{newTransactionError}</Text>
+            ) : null}
+
+            <Text style={styles.modalLabel}>VALOR:</Text>
+            <View
+              style={[
+                styles.amountInputContainer,
+                newTransactionType === "income"
+                  ? styles.incomeInput
+                  : styles.expenseInput,
+              ]}
+            >
+              <Text
+                style={[
+                  styles.amountPrefix,
+                  newTransactionType === "income"
+                    ? styles.incomeAmount
+                    : styles.expenseAmount,
+                ]}
+              >
+                R$
+              </Text>
+              <TextInput
+                keyboardType="decimal-pad"
+                onChangeText={handleNewTransactionAmountChange}
+                placeholder="0,00"
+                style={styles.amountInput}
+                value={newTransactionAmount}
+              />
+            </View>
+
+            <Text style={styles.modalLabel}>DATA:</Text>
+            <TextInput
+              keyboardType="number-pad"
+              maxLength={10}
+              onChangeText={handleNewTransactionDateChange}
+              placeholder="DD/MM/AAAA"
+              style={[
+                styles.modalInput,
+                newTransactionType === "income"
+                  ? styles.incomeInput
+                  : styles.expenseInput,
+              ]}
+              value={newTransactionDate}
+            />
+
+            <Text style={styles.modalLabel}>DESCRIÇÃO:</Text>
+            <TextInput
+              onChangeText={setNewTransactionTitle}
+              placeholder="Nome da transação"
+              style={[
+                styles.modalInput,
+                newTransactionType === "income"
+                  ? styles.incomeInput
+                  : styles.expenseInput,
+              ]}
+              value={newTransactionTitle}
+            />
+
+            <Text style={styles.modalLabel}>COMPROVANTE:</Text>
+            <View style={styles.receiptDropZone}>
+              <FontAwesome5 name="folder" size={20} color={colors.textSubtle} />
+              <Text style={styles.receiptDropText}>
+                Click to browse or{"\n"}drag and drop your files
+              </Text>
+            </View>
+
+            <View style={styles.modalActions}>
+              <TouchableOpacity
+                onPress={handleCreateTransaction}
+                style={styles.modalConfirmButton}
+              >
+                <Text style={styles.modalButtonText}>CONFIRMAR</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={closeCreateModal}
+                style={styles.modalCancelButton}
+              >
+                <Text style={styles.modalButtonText}>CANCELAR</Text>
+              </TouchableOpacity>
+            </View>
+            </ScrollView>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
     </ScrollView>
   );
 }
