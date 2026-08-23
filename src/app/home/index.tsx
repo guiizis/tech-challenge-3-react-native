@@ -1,3 +1,4 @@
+import OverviewDonutChart from "@/components/home/OverviewDonutChart";
 import { useAuth } from "@/context/AuthContext";
 import { useFinance } from "@/context/FinanceContext";
 import colors from "@/styles/colors";
@@ -166,7 +167,7 @@ export default function HomeScreen() {
 
       <View style={styles.overview}>
         <Text style={styles.overviewTitle}>Overview</Text>
-        <Text style={styles.overviewValue}>{overviewPercentage}%</Text>
+        <OverviewDonutChart percentage={overviewPercentage} />
         <Text style={styles.overviewDescription}>
           Entradas {formatCurrency(incomeTotal)} / Saidas{" "}
           {formatCurrency(expenseTotal)}

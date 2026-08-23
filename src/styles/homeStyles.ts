@@ -150,23 +150,22 @@ export default StyleSheet.create({
     fontSize: 12,
   },
   overview: {
+    alignItems: "center",
     backgroundColor: colors.surfaceMuted,
     borderRadius: 28,
+    gap: 10,
     minHeight: 274,
     padding: 16,
   },
   overviewTitle: {
+    alignSelf: "flex-start",
     color: colors.textDark,
     fontSize: 20,
     fontWeight: "800",
   },
-  overviewValue: {
-    color: colors.textDark,
-    fontSize: 32,
-    fontWeight: "800",
-  },
   overviewDescription: {
     color: colors.textInactive,
+    textAlign: "center",
   },
   logout: {
     color: colors.financePrimary,

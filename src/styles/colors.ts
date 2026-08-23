@@ -33,5 +33,8 @@ export default {
   financePrimarySoft: "#C9C7FF",
   income: "#22C55E",
   expense: "#EF4444",
+  chartTrack: "#F0EDFF",
+  chartIncome: "#6C3FF2",
+  chartExpense: "#F52B93",
   danger: "#B91C1C",
 };
