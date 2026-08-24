@@ -2,6 +2,10 @@ import { StyleSheet } from "react-native";
 import colors from "./colors";
 
 export default StyleSheet.create({
+  screen: {
+    backgroundColor: colors.appBackground,
+    flex: 1,
+  },
   container: {
     backgroundColor: colors.appBackground,
     gap: 18,
@@ -88,7 +92,10 @@ export default StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     gap: 12,
+    marginTop: 8,
+    paddingBottom: 4,
     paddingHorizontal: 12,
+    paddingTop: 4,
   },
   filter: {
     color: colors.textInactive,
@@ -101,8 +108,9 @@ export default StyleSheet.create({
   searchRow: {
     alignItems: "center",
     flexDirection: "row",
-    gap: 18,
-    paddingHorizontal: 34,
+    gap: 12,
+    marginTop: 4,
+    paddingHorizontal: 20,
   },
   addTransactionButton: {
     alignItems: "center",
@@ -125,14 +133,27 @@ export default StyleSheet.create({
     flex: 1,
     fontSize: 24,
   },
+  filtersButton: {
+    alignItems: "center",
+    backgroundColor: colors.financePrimary,
+    borderRadius: 6,
+    height: 42,
+    justifyContent: "center",
+    width: 42,
+  },
   transactions: {
     backgroundColor: colors.surface,
     borderRadius: 8,
     paddingHorizontal: 16,
     paddingVertical: 10,
   },
+  transactionList: {
+    backgroundColor: colors.appBackground,
+    flex: 1,
+  },
   transactionCard: {
     alignItems: "center",
+    backgroundColor: colors.surface,
     borderBottomColor: colors.appBackground,
     borderBottomWidth: 1,
     flexDirection: "row",
@@ -192,6 +213,13 @@ export default StyleSheet.create({
     fontSize: 14,
     fontWeight: "700",
     paddingVertical: 24,
+    textAlign: "center",
+  },
+  loadingMoreTransactions: {
+    color: colors.textSubtle,
+    fontSize: 12,
+    fontWeight: "700",
+    paddingVertical: 12,
     textAlign: "center",
   },
   overview: {
@@ -360,5 +388,41 @@ export default StyleSheet.create({
     fontSize: 11,
     fontWeight: "800",
     textAlign: "center",
+  },
+  filtersModalSheet: {
+    backgroundColor: colors.surface,
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
+    gap: 10,
+    padding: 18,
+    paddingBottom: 24,
+    width: "100%",
+  },
+  filtersDateRow: {
+    flexDirection: "row",
+    gap: 12,
+  },
+  filtersDateField: {
+    flex: 1,
+  },
+  sortControl: {
+    backgroundColor: colors.surfaceMuted,
+    borderRadius: 6,
+    flexDirection: "row",
+    gap: 6,
+    padding: 3,
+  },
+  sortOption: {
+    borderRadius: 5,
+    color: colors.textInactive,
+    flex: 1,
+    fontSize: 12,
+    fontWeight: "700",
+    paddingVertical: 8,
+    textAlign: "center",
+  },
+  sortOptionActive: {
+    backgroundColor: colors.surface,
+    color: colors.financePrimary,
   },
 });

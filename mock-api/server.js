@@ -105,10 +105,23 @@ server.patch("/password", (request, response) => {
 });
 
 server.get("/transactions/search", (request, response) => {
-  const { userId, q, type } = request.query;
+  const {
+    userId,
+    q,
+    type,
+    category,
+    startDate,
+    endDate,
+    sort,
+    _page,
+    _limit,
+  } = request.query;
   const normalizedQuery = String(q ?? "").trim().toLowerCase();
   const normalizedType = String(type ?? "").trim();
+  const normalizedCategory = String(category ?? "").trim().toLowerCase();
   const numericUserId = Number(userId);
+  const page = Math.max(Number(_page) || 1, 1);
+  const limit = Math.max(Number(_limit) || 6, 1);
 
   if (!numericUserId) {
     response.status(400).json({ message: "Usuario invalido." });
@@ -126,13 +139,37 @@ server.get("/transactions/search", (request, response) => {
       const matchesQuery =
         normalizedQuery === "" ||
         String(transaction.title ?? "").toLowerCase().includes(normalizedQuery);
+      const matchesCategory =
+        normalizedCategory === "" ||
+        String(transaction.category ?? "")
+          .toLowerCase()
+          .includes(normalizedCategory);
+      const matchesStartDate =
+        !startDate || String(transaction.date) >= String(startDate);
+      const matchesEndDate =
+        !endDate || String(transaction.date) <= String(endDate);
 
-      return belongsToUser && matchesType && matchesQuery;
+      return (
+        belongsToUser &&
+        matchesType &&
+        matchesQuery &&
+        matchesCategory &&
+        matchesStartDate &&
+        matchesEndDate
+      );
     })
-    .orderBy(["date"], ["desc"])
+    .orderBy(["date"], [sort === "date_asc" ? "asc" : "desc"])
     .value();
+  const start = (page - 1) * limit;
+  const data = transactions.slice(start, start + limit);
 
-  response.status(200).json(transactions);
+  response.status(200).json({
+    data,
+    total: transactions.length,
+    page,
+    limit,
+    hasMore: start + limit < transactions.length,
+  });
 });
 
 server.post("/transactions", (request, response) => {
