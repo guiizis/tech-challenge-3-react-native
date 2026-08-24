@@ -3,11 +3,13 @@ import { useAuth } from "@/context/AuthContext";
 import { useFinance } from "@/context/FinanceContext";
 import colors from "@/styles/colors";
 import styles from "@/styles/homeStyles";
-import { TransactionType } from "@/types/finance";
+import { Transaction, TransactionType } from "@/types/finance";
 import {
+  formatBrazilianDateInput,
   formatCurrency,
   formatDateInput,
   formatMoneyInput,
+  formatMoneyValueInput,
   parseBrazilianDateInput,
   parseMoneyInput,
   formatShortDate,
@@ -18,6 +20,7 @@ import { Redirect } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   Image,
   KeyboardAvoidingView,
   Modal,
@@ -59,6 +62,9 @@ export default function HomeScreen() {
   const [isBalanceVisible, setIsBalanceVisible] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
+  const [editingTransactionId, setEditingTransactionId] = useState<
+    number | null
+  >(null);
   const [newTransactionType, setNewTransactionType] =
     useState<TransactionType>("income");
   const [newTransactionTitle, setNewTransactionTitle] = useState("");
@@ -77,6 +83,8 @@ export default function HomeScreen() {
     searchTransactions,
     clearTransactionSearch,
     createTransaction,
+    updateTransaction,
+    deleteTransaction,
     incomeTotal,
     expenseTotal,
     overviewPercentage,
@@ -96,6 +104,7 @@ export default function HomeScreen() {
   const balanceCardDate = useMemo(() => formatTodayLabel(), []);
 
   function resetNewTransactionForm() {
+    setEditingTransactionId(null);
     setNewTransactionType("income");
     setNewTransactionTitle("");
     setNewTransactionAmount("");
@@ -107,6 +116,22 @@ export default function HomeScreen() {
   function closeCreateModal() {
     setIsCreateModalVisible(false);
     resetNewTransactionForm();
+  }
+
+  function openCreateModal() {
+    resetNewTransactionForm();
+    setIsCreateModalVisible(true);
+  }
+
+  function openEditModal(transaction: Transaction) {
+    setEditingTransactionId(transaction.id);
+    setNewTransactionType(transaction.type);
+    setNewTransactionTitle(transaction.title);
+    setNewTransactionAmount(formatMoneyValueInput(transaction.amount));
+    setNewTransactionDate(formatBrazilianDateInput(transaction.date));
+    setNewTransactionDescription(transaction.description);
+    setNewTransactionError("");
+    setIsCreateModalVisible(true);
   }
 
   function handleFilterChange(nextFilter: "all" | TransactionType) {
@@ -126,7 +151,7 @@ export default function HomeScreen() {
     setNewTransactionDate(formatDateInput(value));
   }
 
-  async function handleCreateTransaction() {
+  async function handleSubmitTransaction() {
     if (!user || !account) {
       setNewTransactionError("Não foi possível identificar a conta.");
       return;
@@ -147,7 +172,7 @@ export default function HomeScreen() {
     setNewTransactionError("");
 
     try {
-      await createTransaction({
+      const transactionInput = {
         userId: user.id,
         accountId: account.id,
         type: newTransactionType,
@@ -156,7 +181,13 @@ export default function HomeScreen() {
         amount,
         date: parseBrazilianDateInput(newTransactionDate),
         description: newTransactionDescription,
-      });
+      };
+
+      if (editingTransactionId) {
+        await updateTransaction(editingTransactionId, transactionInput);
+      } else {
+        await createTransaction(transactionInput);
+      }
 
       setSearchTerm("");
       clearTransactionSearch();
@@ -168,6 +199,25 @@ export default function HomeScreen() {
           : "Não foi possível criar a transação.",
       );
     }
+  }
+
+  function handleDeleteTransaction(transaction: Transaction) {
+    Alert.alert(
+      "Excluir transação",
+      `Deseja excluir "${transaction.title}"?`,
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Excluir",
+          style: "destructive",
+          onPress: async () => {
+            await deleteTransaction(transaction.id);
+            setSearchTerm("");
+            clearTransactionSearch();
+          },
+        },
+      ],
+    );
   }
 
   useEffect(() => {
@@ -260,7 +310,7 @@ export default function HomeScreen() {
           <TouchableOpacity
             accessibilityLabel="Adicionar transação"
             accessibilityRole="button"
-            onPress={() => setIsCreateModalVisible(true)}
+            onPress={openCreateModal}
             style={styles.addTransactionButton}
           >
             <FontAwesome5 name="plus" size={24} color={colors.financePrimary} />
@@ -325,6 +375,32 @@ export default function HomeScreen() {
               <Text style={styles.transactionDate}>
                 {formatShortDate(transaction.date)}
               </Text>
+              <View style={styles.transactionActions}>
+                <TouchableOpacity
+                  accessibilityLabel={`Editar ${transaction.title}`}
+                  accessibilityRole="button"
+                  onPress={() => openEditModal(transaction)}
+                  style={styles.transactionActionButton}
+                >
+                  <FontAwesome5
+                    name="edit"
+                    size={15}
+                    color={colors.financePrimary}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  accessibilityLabel={`Excluir ${transaction.title}`}
+                  accessibilityRole="button"
+                  onPress={() => handleDeleteTransaction(transaction)}
+                  style={styles.transactionActionButton}
+                >
+                  <FontAwesome5
+                    name="trash-alt"
+                    size={15}
+                    color={colors.financePrimary}
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         ))}
@@ -356,7 +432,9 @@ export default function HomeScreen() {
         >
           <View style={styles.transactionModalSheet}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Nova Transação</Text>
+              <Text style={styles.modalTitle}>
+                {editingTransactionId ? "Editar Transação" : "Nova Transação"}
+              </Text>
               <TouchableOpacity
                 accessibilityLabel="Fechar nova transação"
                 accessibilityRole="button"
@@ -504,7 +582,7 @@ export default function HomeScreen() {
 
             <View style={styles.modalActions}>
               <TouchableOpacity
-                onPress={handleCreateTransaction}
+                onPress={handleSubmitTransaction}
                 style={styles.modalConfirmButton}
               >
                 <Text style={styles.modalButtonText}>CONFIRMAR</Text>

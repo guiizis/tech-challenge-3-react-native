@@ -176,6 +176,17 @@ export default StyleSheet.create({
     color: colors.textSubtle,
     fontSize: 12,
   },
+  transactionActions: {
+    flexDirection: "row",
+    gap: 12,
+    justifyContent: "flex-end",
+  },
+  transactionActionButton: {
+    alignItems: "center",
+    height: 24,
+    justifyContent: "center",
+    width: 24,
+  },
   emptyTransactions: {
     color: colors.textSubtle,
     fontSize: 14,

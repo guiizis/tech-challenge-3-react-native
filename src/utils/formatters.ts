@@ -48,6 +48,14 @@ export function parseMoneyInput(value: string) {
   return Number(digits) / 100;
 }
 
+export function formatMoneyValueInput(value: number) {
+  if (!Number.isFinite(value)) {
+    return "";
+  }
+
+  return formatMoneyInput(String(Math.round(value * 100)));
+}
+
 export function formatDateInput(value: string) {
   const digits = value.replace(/\D/g, "").slice(0, 8);
   const day = digits.slice(0, 2);
@@ -73,4 +81,14 @@ export function parseBrazilianDateInput(value: string) {
   }
 
   return `${year}-${month}-${day}`;
+}
+
+export function formatBrazilianDateInput(value: string) {
+  const [year, month, day] = value.split("-");
+
+  if (!day || !month || !year) {
+    return "";
+  }
+
+  return `${day}/${month}/${year}`;
 }

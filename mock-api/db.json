@@ -187,17 +187,6 @@
       "description": "Receita de anuncios"
     },
     {
-      "id": 1787529015568,
-      "userId": 1787428672211,
-      "accountId": 1787428672212,
-      "type": "income",
-      "title": "Teste",
-      "category": "Income",
-      "amount": 12364.64,
-      "date": "2023-08-25",
-      "description": ""
-    },
-    {
       "id": 1787529043705,
       "userId": 1787428672211,
       "accountId": 1787428672212,
