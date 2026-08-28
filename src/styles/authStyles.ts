@@ -94,6 +94,35 @@ export default StyleSheet.create({
     fontSize: 12,
     marginTop: 5,
   },
+  alert: {
+    alignItems: "center",
+    borderRadius: 8,
+    borderWidth: 1,
+    flexDirection: "row",
+    gap: 8,
+    marginBottom: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  alertError: {
+    backgroundColor: colors.errorBackground,
+    borderColor: colors.errorBorder,
+  },
+  alertSuccess: {
+    backgroundColor: colors.successBackground,
+    borderColor: colors.successBorder,
+  },
+  alertText: {
+    flex: 1,
+    fontSize: 12,
+    fontWeight: "600",
+  },
+  alertErrorText: {
+    color: colors.textError,
+  },
+  alertSuccessText: {
+    color: colors.textSuccess,
+  },
   forgot: {
     color: colors.primary,
     fontSize: 13,
@@ -120,10 +149,26 @@ export default StyleSheet.create({
     textAlign: "center",
     letterSpacing: 1,
   },
+  socialHeader: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 8,
+    marginBottom: 14,
+  },
   socialText: {
     color: colors.textMuted,
     fontSize: 13,
-    marginBottom: 14,
+  },
+  socialBadge: {
+    backgroundColor: colors.inputBackground,
+    borderColor: colors.inputBorder,
+    borderRadius: 999,
+    borderWidth: 1,
+    color: colors.textMuted,
+    fontSize: 11,
+    fontWeight: "600",
+    paddingHorizontal: 8,
+    paddingVertical: 3,
   },
   socialRow: {
     flexDirection: "row",
