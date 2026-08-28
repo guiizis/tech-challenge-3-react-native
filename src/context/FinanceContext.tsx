@@ -5,7 +5,7 @@ import {
   getAccountByUserId,
   getCardByUserId,
   getTransactionsByUserId,
-  searchTransactionsByUserId,
+  searchTransactionsByFilters,
   updateTransaction as updateTransactionRequest,
 } from "@/services/financeApi";
 import {
@@ -14,6 +14,7 @@ import {
   Transaction,
   TransactionFilter,
   TransactionInput,
+  TransactionSearchFilters,
 } from "@/types/finance";
 import {
   createContext,
@@ -29,10 +30,13 @@ type FinanceState = {
   account: Account | null;
   card: Card | null;
   transactions: Transaction[];
-  searchResults: Transaction[] | null;
+  visibleTransactions: Transaction[];
+  transactionFilters: TransactionSearchFilters;
   selectedTransaction: Transaction | null;
   filter: TransactionFilter;
+  hasMoreTransactions: boolean;
   isLoading: boolean;
+  isLoadingMoreTransactions: boolean;
   isSearching: boolean;
   error: string;
 };
@@ -45,12 +49,30 @@ type FinanceAction =
         account: Account | null;
         card: Card | null;
         transactions: Transaction[];
+        visibleTransactions: Transaction[];
+        hasMoreTransactions: boolean;
       };
     }
   | { type: "LOAD_FINANCE_ERROR"; payload: string }
   | { type: "SET_TRANSACTION_FILTER"; payload: TransactionFilter }
   | { type: "SEARCH_TRANSACTIONS_START" }
-  | { type: "SEARCH_TRANSACTIONS_SUCCESS"; payload: Transaction[] }
+  | {
+      type: "SEARCH_TRANSACTIONS_SUCCESS";
+      payload: {
+        filters: TransactionSearchFilters;
+        hasMoreTransactions: boolean;
+        transactions: Transaction[];
+      };
+    }
+  | { type: "LOAD_MORE_TRANSACTIONS_START" }
+  | {
+      type: "LOAD_MORE_TRANSACTIONS_SUCCESS";
+      payload: {
+        filters: TransactionSearchFilters;
+        hasMoreTransactions: boolean;
+        transactions: Transaction[];
+      };
+    }
   | { type: "SEARCH_TRANSACTIONS_ERROR"; payload: string }
   | { type: "CLEAR_TRANSACTION_SEARCH" }
   | { type: "CREATE_TRANSACTION_SUCCESS"; payload: Transaction }
@@ -68,9 +90,9 @@ type FinanceContextValue = FinanceState & {
   overviewPercentage: number;
   setFilter: (filter: TransactionFilter) => void;
   searchTransactions: (
-    query: string,
-    type?: TransactionFilter,
+    filters?: TransactionSearchFilters,
   ) => Promise<void>;
+  loadMoreTransactions: () => Promise<void>;
   clearTransactionSearch: () => void;
   refreshFinance: () => Promise<void>;
   createTransaction: (input: TransactionInput) => Promise<Transaction>;
@@ -87,10 +109,13 @@ const initialState: FinanceState = {
   account: null,
   card: null,
   transactions: [],
-  searchResults: null,
+  visibleTransactions: [],
+  transactionFilters: { page: 1, sort: "date_desc", type: "all" },
   selectedTransaction: null,
   filter: "all",
+  hasMoreTransactions: false,
   isLoading: false,
+  isLoadingMoreTransactions: false,
   isSearching: false,
   error: "",
 };
@@ -107,8 +132,12 @@ function financeReducer(
     case "LOAD_FINANCE_SUCCESS":
       return {
         ...state,
-        ...action.payload,
-        searchResults: null,
+        account: action.payload.account,
+        card: action.payload.card,
+        transactions: action.payload.transactions,
+        visibleTransactions: action.payload.visibleTransactions,
+        hasMoreTransactions: action.payload.hasMoreTransactions,
+        transactionFilters: { page: 1, sort: "date_desc", type: "all" },
         isLoading: false,
         error: "",
       };
@@ -121,19 +150,46 @@ function financeReducer(
     case "SEARCH_TRANSACTIONS_SUCCESS":
       return {
         ...state,
-        searchResults: action.payload,
+        transactionFilters: action.payload.filters,
+        visibleTransactions: action.payload.transactions,
+        hasMoreTransactions: action.payload.hasMoreTransactions,
         isSearching: false,
         error: "",
       };
+    case "LOAD_MORE_TRANSACTIONS_START":
+      return { ...state, isLoadingMoreTransactions: true, error: "" };
+    case "LOAD_MORE_TRANSACTIONS_SUCCESS":
+      return {
+        ...state,
+        transactionFilters: action.payload.filters,
+        visibleTransactions: [
+          ...state.visibleTransactions,
+          ...action.payload.transactions,
+        ],
+        hasMoreTransactions: action.payload.hasMoreTransactions,
+        isLoadingMoreTransactions: false,
+        error: "",
+      };
     case "SEARCH_TRANSACTIONS_ERROR":
-      return { ...state, isSearching: false, error: action.payload };
+      return {
+        ...state,
+        isLoadingMoreTransactions: false,
+        isSearching: false,
+        error: action.payload,
+      };
     case "CLEAR_TRANSACTION_SEARCH":
-      return { ...state, searchResults: null, isSearching: false, error: "" };
+      return {
+        ...state,
+        transactionFilters: { page: 1, sort: "date_desc", type: state.filter },
+        isLoadingMoreTransactions: false,
+        isSearching: false,
+        error: "",
+      };
     case "CREATE_TRANSACTION_SUCCESS":
       return {
         ...state,
-        searchResults: null,
         transactions: [action.payload, ...state.transactions],
+        visibleTransactions: [action.payload, ...state.visibleTransactions],
       };
     case "UPDATE_TRANSACTION_SUCCESS":
       return {
@@ -141,7 +197,9 @@ function financeReducer(
         transactions: state.transactions.map((transaction) =>
           transaction.id === action.payload.id ? action.payload : transaction,
         ),
-        searchResults: null,
+        visibleTransactions: state.visibleTransactions.map((transaction) =>
+          transaction.id === action.payload.id ? action.payload : transaction,
+        ),
         selectedTransaction:
           state.selectedTransaction?.id === action.payload.id
             ? action.payload
@@ -153,7 +211,9 @@ function financeReducer(
         transactions: state.transactions.filter(
           (transaction) => transaction.id !== action.payload,
         ),
-        searchResults: null,
+        visibleTransactions: state.visibleTransactions.filter(
+          (transaction) => transaction.id !== action.payload,
+        ),
         selectedTransaction:
           state.selectedTransaction?.id === action.payload
             ? null
@@ -183,15 +243,27 @@ export function FinanceProvider({ children }: PropsWithChildren) {
     dispatch({ type: "LOAD_FINANCE_START" });
 
     try {
-      const [account, card, transactions] = await Promise.all([
+      const [account, card, transactions, paginatedTransactions] =
+        await Promise.all([
         getAccountByUserId(user.id),
         getCardByUserId(user.id),
         getTransactionsByUserId(user.id),
+        searchTransactionsByFilters(user.id, {
+          page: 1,
+          sort: "date_desc",
+          type: "all",
+        }),
       ]);
 
       dispatch({
         type: "LOAD_FINANCE_SUCCESS",
-        payload: { account, card, transactions },
+        payload: {
+          account,
+          card,
+          transactions,
+          visibleTransactions: paginatedTransactions.data,
+          hasMoreTransactions: paginatedTransactions.hasMore,
+        },
       });
     } catch (error) {
       dispatch({
@@ -233,31 +305,33 @@ export function FinanceProvider({ children }: PropsWithChildren) {
   }
 
   const searchTransactions = useCallback(async (
-    query: string,
-    type: TransactionFilter = state.filter,
+    filters: TransactionSearchFilters = {},
   ) => {
     if (!user) {
       dispatch({ type: "CLEAR_TRANSACTION_SEARCH" });
       return;
     }
 
-    const normalizedQuery = query.trim();
-
-    if (!normalizedQuery) {
-      dispatch({ type: "CLEAR_TRANSACTION_SEARCH" });
-      return;
-    }
+    const nextFilters: TransactionSearchFilters = {
+      sort: "date_desc",
+      ...filters,
+      page: 1,
+      type: filters.type ?? state.filter,
+    };
 
     dispatch({ type: "SEARCH_TRANSACTIONS_START" });
 
     try {
-      const transactions = await searchTransactionsByUserId(
-        user.id,
-        normalizedQuery,
-        type,
-      );
+      const response = await searchTransactionsByFilters(user.id, nextFilters);
 
-      dispatch({ type: "SEARCH_TRANSACTIONS_SUCCESS", payload: transactions });
+      dispatch({
+        type: "SEARCH_TRANSACTIONS_SUCCESS",
+        payload: {
+          filters: nextFilters,
+          hasMoreTransactions: response.hasMore,
+          transactions: response.data,
+        },
+      });
     } catch (error) {
       dispatch({
         type: "SEARCH_TRANSACTIONS_ERROR",
@@ -268,6 +342,45 @@ export function FinanceProvider({ children }: PropsWithChildren) {
       });
     }
   }, [state.filter, user]);
+
+  const loadMoreTransactions = useCallback(async () => {
+    if (!user || !state.hasMoreTransactions || state.isLoadingMoreTransactions) {
+      return;
+    }
+
+    const nextFilters: TransactionSearchFilters = {
+      ...state.transactionFilters,
+      page: (state.transactionFilters.page ?? 1) + 1,
+    };
+
+    dispatch({ type: "LOAD_MORE_TRANSACTIONS_START" });
+
+    try {
+      const response = await searchTransactionsByFilters(user.id, nextFilters);
+
+      dispatch({
+        type: "LOAD_MORE_TRANSACTIONS_SUCCESS",
+        payload: {
+          filters: nextFilters,
+          hasMoreTransactions: response.hasMore,
+          transactions: response.data,
+        },
+      });
+    } catch (error) {
+      dispatch({
+        type: "SEARCH_TRANSACTIONS_ERROR",
+        payload:
+          error instanceof Error
+            ? error.message
+            : "Nao foi possivel carregar mais transacoes.",
+      });
+    }
+  }, [
+    state.hasMoreTransactions,
+    state.isLoadingMoreTransactions,
+    state.transactionFilters,
+    user,
+  ]);
 
   const clearTransactionSearch = useCallback(() => {
     dispatch({ type: "CLEAR_TRANSACTION_SEARCH" });
@@ -282,16 +395,8 @@ export function FinanceProvider({ children }: PropsWithChildren) {
   }
 
   const filteredTransactions = useMemo(() => {
-    const transactions = state.searchResults ?? state.transactions;
-
-    if (state.filter === "all") {
-      return transactions;
-    }
-
-    return transactions.filter(
-      (transaction) => transaction.type === state.filter,
-    );
-  }, [state.filter, state.searchResults, state.transactions]);
+    return state.visibleTransactions;
+  }, [state.visibleTransactions]);
 
   const { incomeTotal, expenseTotal } = useMemo(() => {
     return state.transactions.reduce(
@@ -339,6 +444,7 @@ export function FinanceProvider({ children }: PropsWithChildren) {
       overviewPercentage,
       setFilter,
       searchTransactions,
+      loadMoreTransactions,
       clearTransactionSearch,
       refreshFinance,
       createTransaction,
@@ -355,6 +461,7 @@ export function FinanceProvider({ children }: PropsWithChildren) {
       overviewPercentage,
       refreshFinance,
       searchTransactions,
+      loadMoreTransactions,
       clearTransactionSearch,
       state,
     ],

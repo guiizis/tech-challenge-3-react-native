@@ -2,9 +2,10 @@ import { env } from "@/config/env";
 import {
   Account,
   Card,
+  PaginatedTransactionsResponse,
   Transaction,
-  TransactionFilter,
   TransactionInput,
+  TransactionSearchFilters,
 } from "@/types/finance";
 
 async function parseApiResponse<T>(response: Response, fallbackMessage: string) {
@@ -48,19 +49,37 @@ export async function getTransactionsByUserId(userId: number) {
   );
 }
 
-export async function searchTransactionsByUserId(
+export async function searchTransactionsByFilters(
   userId: number,
-  query: string,
-  type: TransactionFilter = "all",
+  filters: TransactionSearchFilters = {},
 ) {
   const params = new URLSearchParams({
     userId: String(userId),
-    q: query.trim(),
-    type,
+    q: filters.query?.trim() ?? "",
+    type: filters.type ?? "all",
+    _page: String(filters.page ?? 1),
+    _limit: "6",
   });
+
+  if (filters.category?.trim()) {
+    params.set("category", filters.category.trim());
+  }
+
+  if (filters.startDate) {
+    params.set("startDate", filters.startDate);
+  }
+
+  if (filters.endDate) {
+    params.set("endDate", filters.endDate);
+  }
+
+  if (filters.sort) {
+    params.set("sort", filters.sort);
+  }
+
   const response = await fetch(`${env.apiUrl}/transactions/search?${params}`);
 
-  return parseApiResponse<Transaction[]>(
+  return parseApiResponse<PaginatedTransactionsResponse>(
     response,
     "Nao foi possivel pesquisar as transacoes.",
   );

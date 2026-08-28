@@ -37,3 +37,23 @@ export type Transaction = {
 export type TransactionFilter = "all" | TransactionType;
 
 export type TransactionInput = Omit<Transaction, "id">;
+
+export type TransactionSort = "date_desc" | "date_asc";
+
+export type TransactionSearchFilters = {
+  category?: string;
+  endDate?: string;
+  page?: number;
+  query?: string;
+  sort?: TransactionSort;
+  startDate?: string;
+  type?: TransactionFilter;
+};
+
+export type PaginatedTransactionsResponse = {
+  data: Transaction[];
+  total: number;
+  page: number;
+  limit: number;
+  hasMore: boolean;
+};

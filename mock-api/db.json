@@ -196,6 +196,127 @@
       "amount": 3600,
       "date": "2026-08-23",
       "description": ""
+    },
+    {
+      "id": 1787529043706,
+      "userId": 1787428672211,
+      "accountId": 1787428672212,
+      "type": "income",
+      "title": "Salario ByteBank",
+      "category": "Salary",
+      "amount": 2500,
+      "date": "2026-08-20",
+      "description": "Credito mensal"
+    },
+    {
+      "id": 1787529043707,
+      "userId": 1787428672211,
+      "accountId": 1787428672212,
+      "type": "expense",
+      "title": "Aluguel",
+      "category": "Housing",
+      "amount": 1500,
+      "date": "2026-08-19",
+      "description": "Pagamento de aluguel"
+    },
+    {
+      "id": 1787529043708,
+      "userId": 1787428672211,
+      "accountId": 1787428672212,
+      "type": "expense",
+      "title": "Mercado Central",
+      "category": "Food",
+      "amount": 320,
+      "date": "2026-08-17",
+      "description": "Compras da semana"
+    },
+    {
+      "id": 1787529043709,
+      "userId": 1787428672211,
+      "accountId": 1787428672212,
+      "type": "income",
+      "title": "Reembolso Faculdade",
+      "category": "Refund",
+      "amount": 320,
+      "date": "2026-08-15",
+      "description": "Reembolso de material"
+    },
+    {
+      "id": 1787529043710,
+      "userId": 1787428672211,
+      "accountId": 1787428672212,
+      "type": "expense",
+      "title": "Uber Campus",
+      "category": "Transport",
+      "amount": 80,
+      "date": "2026-08-14",
+      "description": "Transporte"
+    },
+    {
+      "id": 1787529043711,
+      "userId": 1787428672211,
+      "accountId": 1787428672212,
+      "type": "income",
+      "title": "Venda Notebook",
+      "category": "Sales",
+      "amount": 1580,
+      "date": "2026-08-12",
+      "description": "Venda de equipamento"
+    },
+    {
+      "id": 1787529043712,
+      "userId": 1787428672211,
+      "accountId": 1787428672212,
+      "type": "expense",
+      "title": "Curso React Native",
+      "category": "Education",
+      "amount": 450,
+      "date": "2026-08-10",
+      "description": "Curso online"
+    },
+    {
+      "id": 1787529043713,
+      "userId": 1787428672211,
+      "accountId": 1787428672212,
+      "type": "expense",
+      "title": "Internet Fibra",
+      "category": "Bills",
+      "amount": 130,
+      "date": "2026-08-08",
+      "description": "Conta de internet"
+    },
+    {
+      "id": 1787529043714,
+      "userId": 1787428672211,
+      "accountId": 1787428672212,
+      "type": "income",
+      "title": "Cashback Cartao",
+      "category": "Cashback",
+      "amount": 130,
+      "date": "2026-08-07",
+      "description": "Cashback recebido"
+    },
+    {
+      "id": 1787529043715,
+      "userId": 1787428672211,
+      "accountId": 1787428672212,
+      "type": "expense",
+      "title": "Farmacia",
+      "category": "Health",
+      "amount": 210,
+      "date": "2026-08-05",
+      "description": "Compra em farmacia"
+    },
+    {
+      "id": 1787529043716,
+      "userId": 1787428672211,
+      "accountId": 1787428672212,
+      "type": "income",
+      "title": "Freela Landing Page",
+      "category": "Income",
+      "amount": 210,
+      "date": "2026-08-03",
+      "description": "Servico de desenvolvimento"
     }
   ]
 }

@@ -1,6 +1,11 @@
 import { useAuth } from "@/context/AuthContext";
 import { useFinance } from "@/context/FinanceContext";
-import { Transaction, TransactionFilter, TransactionType } from "@/types/finance";
+import {
+  Transaction,
+  TransactionFilter,
+  TransactionSort,
+  TransactionType,
+} from "@/types/finance";
 import {
   formatBrazilianDateInput,
   formatCurrency,
@@ -27,6 +32,11 @@ export function useHomeTransactions() {
   const { user, logout } = useAuth();
   const [isBalanceVisible, setIsBalanceVisible] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isFiltersModalVisible, setIsFiltersModalVisible] = useState(false);
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [startDateFilter, setStartDateFilter] = useState("");
+  const [endDateFilter, setEndDateFilter] = useState("");
+  const [sortFilter, setSortFilter] = useState<TransactionSort>("date_desc");
   const [isTransactionModalVisible, setIsTransactionModalVisible] =
     useState(false);
   const [editingTransactionId, setEditingTransactionId] = useState<
@@ -46,6 +56,7 @@ export function useHomeTransactions() {
     filter,
     setFilter,
     searchTransactions,
+    loadMoreTransactions,
     clearTransactionSearch,
     createTransaction,
     updateTransaction,
@@ -54,7 +65,9 @@ export function useHomeTransactions() {
     expenseTotal,
     overviewPercentage,
     isLoading,
+    isLoadingMoreTransactions,
     isSearching,
+    hasMoreTransactions,
     error,
   } = useFinance();
 
@@ -104,11 +117,6 @@ export function useHomeTransactions() {
 
   function handleFilterChange(nextFilter: TransactionFilter) {
     setFilter(nextFilter);
-
-    if (nextFilter !== "all") {
-      setSearchTerm("");
-      clearTransactionSearch();
-    }
   }
 
   function handleTransactionAmountChange(value: string) {
@@ -117,6 +125,22 @@ export function useHomeTransactions() {
 
   function handleTransactionDateChange(value: string) {
     setTransactionDate(formatDateInput(value));
+  }
+
+  function handleStartDateFilterChange(value: string) {
+    setStartDateFilter(formatDateInput(value));
+  }
+
+  function handleEndDateFilterChange(value: string) {
+    setEndDateFilter(formatDateInput(value));
+  }
+
+  function resetAdvancedFilters() {
+    setCategoryFilter("");
+    setStartDateFilter("");
+    setEndDateFilter("");
+    setSortFilter("date_desc");
+    setIsFiltersModalVisible(false);
   }
 
   async function handleSubmitTransaction() {
@@ -189,21 +213,27 @@ export function useHomeTransactions() {
   }
 
   useEffect(() => {
-    if (filter !== "all") {
-      return;
-    }
-
     const timeoutId = setTimeout(() => {
-      if (searchTerm.trim()) {
-        searchTransactions(searchTerm, "all");
-        return;
-      }
-
-      clearTransactionSearch();
+      searchTransactions({
+        category: categoryFilter,
+        endDate: parseBrazilianDateInput(endDateFilter),
+        query: searchTerm,
+        sort: sortFilter,
+        startDate: parseBrazilianDateInput(startDateFilter),
+        type: filter,
+      });
     }, 300);
 
     return () => clearTimeout(timeoutId);
-  }, [clearTransactionSearch, filter, searchTerm, searchTransactions]);
+  }, [
+    categoryFilter,
+    endDateFilter,
+    filter,
+    searchTerm,
+    searchTransactions,
+    sortFilter,
+    startDateFilter,
+  ]);
 
   return {
     account,
@@ -216,9 +246,12 @@ export function useHomeTransactions() {
     firstName,
     incomeTotal,
     isBalanceVisible,
+    isFiltersModalVisible,
     isLoading,
+    isLoadingMoreTransactions,
     isSearching,
     isTransactionModalVisible,
+    hasMoreTransactions,
     logout,
     overviewPercentage,
     searchTerm,
@@ -229,16 +262,27 @@ export function useHomeTransactions() {
     transactionTitle,
     transactionType,
     user,
+    categoryFilter,
     closeTransactionModal,
+    handleEndDateFilterChange,
     handleDeleteTransaction,
     handleFilterChange,
+    handleStartDateFilterChange,
     handleSubmitTransaction,
     handleTransactionAmountChange,
     handleTransactionDateChange,
+    loadMoreTransactions,
     openCreateModal,
     openEditModal,
+    resetAdvancedFilters,
+    setCategoryFilter,
+    setIsFiltersModalVisible,
     setIsBalanceVisible,
     setSearchTerm,
+    setSortFilter,
+    sortFilter,
+    startDateFilter,
+    endDateFilter,
     setTransactionTitle,
     setTransactionType,
   };
