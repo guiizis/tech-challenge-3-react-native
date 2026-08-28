@@ -23,6 +23,14 @@
       "password": "teste4567",
       "avatarUrl": "https://i.pravatar.cc/100?img=13",
       "accountId": 1787428960390
+    },
+    {
+      "id": 1787510449317,
+      "name": "teste2@teste.com.br",
+      "email": "teste2@teste.com.br",
+      "password": "12345teste",
+      "avatarUrl": "https://i.pravatar.cc/100?img=13",
+      "accountId": 1787510449318
     }
   ],
   "accounts": [
@@ -52,6 +60,15 @@
       "currency": "BRL",
       "agency": "0001",
       "number": "60389-0"
+    },
+    {
+      "id": 1787510449318,
+      "userId": 1787510449317,
+      "type": "Conta Corrente",
+      "balance": 0,
+      "currency": "BRL",
+      "agency": "0001",
+      "number": "49317-0"
     }
   ],
   "cards": [
