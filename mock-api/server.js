@@ -84,6 +84,25 @@ server.post("/signup", (request, response) => {
   });
 });
 
+server.patch("/password", (request, response) => {
+  const { email, password } = request.body;
+  const users = router.db.get("users");
+  const normalizedEmail = String(email ?? "").trim().toLowerCase();
+  const user = users.find({ email: normalizedEmail }).value();
+
+  if (!user) {
+    response.status(404).json({ message: "Usuario nao encontrado." });
+    return;
+  }
+
+  users.find({ id: user.id }).assign({ password }).write();
+
+  const updatedUser = users.find({ id: user.id }).value();
+  const { password: _password, ...safeUser } = updatedUser;
+
+  response.status(200).json({ user: safeUser });
+});
+
 server.use(router);
 
 server.listen(port, () => {

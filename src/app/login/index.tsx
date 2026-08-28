@@ -101,7 +101,9 @@ export default function LoginScreen() {
           textContentType="password"
         />
 
-        <Text style={styles.forgot}>Esqueceu sua senha ?</Text>
+        <Link href="/forgot-password" style={styles.forgot}>
+          Esqueceu sua senha ?
+        </Link>
 
         <AuthPrimaryButton
           label={isSubmitting ? "ENTRANDO..." : "LOGIN"}
