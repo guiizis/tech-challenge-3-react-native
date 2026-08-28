@@ -7,11 +7,19 @@ export default StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  overlay: {
+  keyboardAvoidingView: {
     flex: 1,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  overlay: {
+    flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
+    paddingVertical: 32,
+    paddingBottom: 96,
   },
   titleContainer: {
     alignItems: "center",
@@ -34,10 +42,10 @@ export default StyleSheet.create({
     backgroundColor: colors.cardBackground,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
+    borderColor: colors.cardBorder,
     padding: 22,
     marginBottom: 30,
-    shadowColor: "#000",
+    shadowColor: colors.shadow,
     shadowOpacity: 0.5,
     shadowRadius: 10,
     elevation: 6,
@@ -55,14 +63,36 @@ export default StyleSheet.create({
     marginBottom: 6,
     marginTop: 8,
   },
-  input: {
+  inputContainer: {
     width: "100%",
     backgroundColor: colors.inputBackground,
     borderWidth: 1,
     borderColor: colors.inputBorder,
+    borderRadius: 8,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  inputError: {
+    borderColor: colors.borderError,
+  },
+  input: {
+    flex: 1,
     color: colors.textLight,
     padding: 12,
-    borderRadius: 8,
+  },
+  inputWithTrailingIcon: {
+    paddingRight: 4,
+  },
+  inputIconButton: {
+    width: 44,
+    height: 44,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorText: {
+    color: colors.textError,
+    fontSize: 12,
+    marginTop: 5,
   },
   forgot: {
     color: colors.primary,
@@ -75,6 +105,9 @@ export default StyleSheet.create({
     borderRadius: 25,
     overflow: "hidden",
     marginTop: 15,
+  },
+  buttonDisabled: {
+    opacity: 0.65,
   },
   gradient: {
     paddingVertical: 14,
@@ -98,7 +131,7 @@ export default StyleSheet.create({
     marginBottom: 20,
   },
   socialButton: {
-    backgroundColor: "#DB4437", // vermelho do Google
+    backgroundColor: colors.google,
     width: 46,
     height: 46,
     borderRadius: 23,
@@ -106,15 +139,56 @@ export default StyleSheet.create({
     alignItems: "center",
   },
   socialButtonFb: {
-    backgroundColor: "#3B5998", // azul do Facebook
+    backgroundColor: colors.facebook,
   },
-  signup: {
+  socialButtonDisabled: {
+    opacity: 0.45,
+  },
+  footerText: {
     color: colors.textMuted,
     fontSize: 13,
     textAlign: "center",
   },
-  signupLink: {
+  footerLink: {
     color: colors.primary,
     fontWeight: "bold",
+  },
+  policyRow: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 12,
+  },
+  checkbox: {
+    width: 18,
+    height: 18,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: colors.primary,
+    marginRight: 8,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  checkboxChecked: {
+    backgroundColor: colors.primary,
+  },
+  checkboxMark: {
+    color: colors.textLight,
+    fontSize: 12,
+    fontWeight: "bold",
+  },
+  policyText: {
+    color: colors.textLight,
+    fontSize: 13,
+  },
+  policyLink: {
+    color: colors.primary,
+    fontWeight: "bold",
+  },
+  policyErrorText: {
+    color: colors.textError,
+    fontSize: 12,
+    marginTop: 6,
+    textAlign: "center",
   },
 });

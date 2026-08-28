@@ -1,15 +1,14 @@
-import React from "react";
-import {
-  View,
-  Text,
-  ImageBackground,
-  Image,
-  TouchableOpacity,
-} from "react-native";
-import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
-import styles from "../styles/indexStyles";
+import { useRouter } from "expo-router";
+import {
+  Image,
+  ImageBackground,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import colors from "../styles/colors";
+import styles from "../styles/indexStyles";
 
 export default function HomeScreen() {
   const router = useRouter();
