@@ -2,6 +2,7 @@ export type Account = {
   id: number;
   userId: number;
   type: string;
+  initialBalance: number;
   balance: number;
   currency: string;
   agency: string;
@@ -36,4 +37,3 @@ export type Transaction = {
 export type TransactionFilter = "all" | TransactionType;
 
 export type TransactionInput = Omit<Transaction, "id">;
-

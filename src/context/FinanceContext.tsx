@@ -55,6 +55,7 @@ type FinanceAction =
 
 type FinanceContextValue = FinanceState & {
   filteredTransactions: Transaction[];
+  currentBalance: number;
   incomeTotal: number;
   expenseTotal: number;
   overviewPercentage: number;
@@ -247,10 +248,18 @@ export function FinanceProvider({ children }: PropsWithChildren) {
     return Math.round((incomeTotal / total) * 100);
   }, [expenseTotal, incomeTotal]);
 
+  const currentBalance = useMemo(() => {
+    const initialBalance =
+      state.account?.initialBalance ?? state.account?.balance ?? 0;
+
+    return initialBalance + incomeTotal - expenseTotal;
+  }, [expenseTotal, incomeTotal, state.account]);
+
   const value = useMemo(
     () => ({
       ...state,
       filteredTransactions,
+      currentBalance,
       incomeTotal,
       expenseTotal,
       overviewPercentage,
@@ -263,6 +272,7 @@ export function FinanceProvider({ children }: PropsWithChildren) {
       clearSelectedTransaction,
     }),
     [
+      currentBalance,
       expenseTotal,
       filteredTransactions,
       incomeTotal,
@@ -286,4 +296,3 @@ export function useFinance() {
 
   return context;
 }
-

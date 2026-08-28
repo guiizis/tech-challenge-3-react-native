@@ -31,6 +31,7 @@ export type SignupResponse = LoginResponse & {
     id: number;
     userId: number;
     type: string;
+    initialBalance: number;
     balance: number;
     currency: string;
     agency: string;

@@ -24,6 +24,7 @@ export default {
   appBackground: "#F5F6FB",
   surface: "#FFFFFF",
   surfaceMuted: "#E5E7EB",
+  iconBackground: "#ECEEFA",
   textDark: "#111827",
   textSoft: "#7B7F95",
   textSubtle: "#8B90A1",
@@ -32,5 +33,8 @@ export default {
   financePrimarySoft: "#C9C7FF",
   income: "#22C55E",
   expense: "#EF4444",
+  chartTrack: "#F0EDFF",
+  chartIncome: "#6C3FF2",
+  chartExpense: "#F52B93",
   danger: "#B91C1C",
 };
