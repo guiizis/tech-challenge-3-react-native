@@ -1,179 +1,115 @@
-import OverviewDonutChart from "@/components/home/OverviewDonutChart";
-import { useAuth } from "@/context/AuthContext";
-import { useFinance } from "@/context/FinanceContext";
+import BalanceCard from "@/components/home/BalanceCard";
+import HomeHeader from "@/components/home/HomeHeader";
+import OverviewSection from "@/components/home/OverviewSection";
+import TransactionFormModal from "@/components/home/TransactionFormModal";
+import TransactionList from "@/components/home/TransactionList";
+import TransactionToolbar from "@/components/home/TransactionToolbar";
+import { useHomeTransactions } from "@/hooks/useHomeTransactions";
 import colors from "@/styles/colors";
 import styles from "@/styles/homeStyles";
-import { TransactionType } from "@/types/finance";
-import {
-  formatCurrency,
-  formatShortDate,
-  formatTodayLabel,
-} from "@/utils/formatters";
-import { FontAwesome5 } from "@expo/vector-icons";
 import { Redirect } from "expo-router";
-import { useMemo, useState } from "react";
-import {
-  ActivityIndicator,
-  Image,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-
-function getAmountStyle(type: TransactionType) {
-  return type === "income" ? styles.incomeAmount : styles.expenseAmount;
-}
-
-function getTransactionIcon(type: TransactionType, category: string) {
-  if (category.toLowerCase() === "subscription") {
-    return "music";
-  }
-
-  return type === "income" ? "briefcase" : "credit-card";
-}
+import { ActivityIndicator, ScrollView, Text } from "react-native";
 
 export default function HomeScreen() {
-  const { user, logout } = useAuth();
-  const [isBalanceVisible, setIsBalanceVisible] = useState(true);
   const {
     account,
-    currentBalance,
-    filteredTransactions,
-    filter,
-    setFilter,
-    incomeTotal,
-    expenseTotal,
-    overviewPercentage,
-    isLoading,
+    balanceCardDate,
+    displayedBalance,
     error,
-  } = useFinance();
+    expenseTotal,
+    filter,
+    filteredTransactions,
+    firstName,
+    incomeTotal,
+    isBalanceVisible,
+    isLoading,
+    isSearching,
+    isTransactionModalVisible,
+    logout,
+    overviewPercentage,
+    searchTerm,
+    transactionAmount,
+    transactionDate,
+    transactionError,
+    transactionModalMode,
+    transactionTitle,
+    transactionType,
+    user,
+    closeTransactionModal,
+    handleDeleteTransaction,
+    handleFilterChange,
+    handleSubmitTransaction,
+    handleTransactionAmountChange,
+    handleTransactionDateChange,
+    openCreateModal,
+    openEditModal,
+    setIsBalanceVisible,
+    setSearchTerm,
+    setTransactionTitle,
+    setTransactionType,
+  } = useHomeTransactions();
 
-  const balance = useMemo(
-    () => formatCurrency(currentBalance),
-    [currentBalance],
-  );
-  const displayedBalance = isBalanceVisible ? balance : "R$ ******";
-  const firstName = useMemo(() => {
-    return user?.name.trim().split(/\s+/)[0] ?? "Usuario";
-  }, [user?.name]);
-  const balanceCardDate = useMemo(() => formatTodayLabel(), []);
   if (!user) {
     return <Redirect href="/login" />;
   }
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.headerLabel}>Welcome Back,</Text>
-          <Text style={styles.headerName}>{user.name}</Text>
-        </View>
+      <HomeHeader name={user.name} avatarUrl={user.avatarUrl} />
 
-        <Image source={{ uri: user.avatarUrl }} style={styles.avatar} />
-      </View>
-
-      <View style={styles.balanceCard}>
-        <View style={styles.balanceHeader}>
-          <Text style={styles.balanceGreeting}>Ola, {firstName}!</Text>
-          <Text style={styles.balanceDate}>{balanceCardDate}</Text>
-        </View>
-
-        <View style={styles.balanceLabelRow}>
-          <Text style={styles.balanceLabel}>Saldo</Text>
-          <TouchableOpacity
-            accessibilityLabel={
-              isBalanceVisible ? "Esconder saldo" : "Mostrar saldo"
-            }
-            accessibilityRole="button"
-            onPress={() => setIsBalanceVisible((current) => !current)}
-            style={styles.balanceVisibilityButton}
-          >
-            <FontAwesome5
-              name={isBalanceVisible ? "eye" : "eye-slash"}
-              size={16}
-              color={colors.textLight}
-            />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.balanceDivider} />
-
-        <Text style={styles.accountType}>{account?.type}</Text>
-        <Text style={styles.balance}>{displayedBalance}</Text>
-      </View>
+      <BalanceCard
+        accountType={account?.type}
+        balance={displayedBalance}
+        dateLabel={balanceCardDate}
+        firstName={firstName}
+        isBalanceVisible={isBalanceVisible}
+        onToggleBalance={() => setIsBalanceVisible((current) => !current)}
+      />
 
       {isLoading ? <ActivityIndicator color={colors.financePrimary} /> : null}
       {error ? <Text style={styles.error}>{error}</Text> : null}
 
-      <View style={styles.filters}>
-        <Text
-          onPress={() => setFilter("income")}
-          style={[styles.filter, filter === "income" && styles.filterActive]}
-        >
-          Entradas
-        </Text>
-        <Text
-          onPress={() => setFilter("expense")}
-          style={[styles.filter, filter === "expense" && styles.filterActive]}
-        >
-          Saidas
-        </Text>
-        <Text
-          onPress={() => setFilter("all")}
-          style={[styles.filter, filter === "all" && styles.filterActive]}
-        >
-          Transacoes
-        </Text>
-      </View>
+      <TransactionToolbar
+        filter={filter}
+        isSearching={isSearching}
+        searchTerm={searchTerm}
+        onAddPress={openCreateModal}
+        onFilterChange={handleFilterChange}
+        onSearchChange={setSearchTerm}
+      />
 
-      <View style={styles.transactions}>
-        {filteredTransactions.map((transaction) => (
-          <View key={transaction.id} style={styles.transactionCard}>
-            <View style={styles.transactionIcon}>
-              <FontAwesome5
-                name={getTransactionIcon(transaction.type, transaction.category)}
-                size={18}
-                color={colors.financePrimary}
-              />
-            </View>
+      <TransactionList
+        transactions={filteredTransactions}
+        onDelete={handleDeleteTransaction}
+        onEdit={openEditModal}
+      />
 
-            <View style={styles.transactionInfo}>
-              <Text style={styles.transactionTitle}>{transaction.title}</Text>
-              <Text style={styles.transactionCategory}>
-                {transaction.category}
-              </Text>
-            </View>
-
-            <View style={styles.transactionMeta}>
-              <Text
-                style={[
-                  styles.transactionAmount,
-                  getAmountStyle(transaction.type),
-                ]}
-              >
-                {transaction.type === "income" ? "+" : "-"}{" "}
-                {formatCurrency(transaction.amount)}
-              </Text>
-              <Text style={styles.transactionDate}>
-                {formatShortDate(transaction.date)}
-              </Text>
-            </View>
-          </View>
-        ))}
-      </View>
-
-      <View style={styles.overview}>
-        <Text style={styles.overviewTitle}>Overview</Text>
-        <OverviewDonutChart percentage={overviewPercentage} />
-        <Text style={styles.overviewDescription}>
-          Entradas {formatCurrency(incomeTotal)} / Saidas{" "}
-          {formatCurrency(expenseTotal)}
-        </Text>
-      </View>
+      <OverviewSection
+        expenseTotal={expenseTotal}
+        incomeTotal={incomeTotal}
+        percentage={overviewPercentage}
+      />
 
       <Text onPress={logout} style={styles.logout}>
         Sair
       </Text>
+
+      <TransactionFormModal
+        amount={transactionAmount}
+        date={transactionDate}
+        error={transactionError}
+        mode={transactionModalMode}
+        title={transactionTitle}
+        type={transactionType}
+        visible={isTransactionModalVisible}
+        onAmountChange={handleTransactionAmountChange}
+        onClose={closeTransactionModal}
+        onDateChange={handleTransactionDateChange}
+        onSubmit={handleSubmitTransaction}
+        onTitleChange={setTransactionTitle}
+        onTypeChange={setTransactionType}
+      />
     </ScrollView>
   );
 }
+
