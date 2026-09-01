@@ -97,6 +97,60 @@
       "availableLimit": 3820
     }
   ],
+  "categories": [
+    {
+      "name": "Salário",
+      "value": "SALARY"
+    },
+    {
+      "name": "Renda",
+      "value": "INCOME"
+    },
+    {
+      "name": "Assinatura",
+      "value": "SUBSCRIPTION"
+    },
+    {
+      "name": "Despesa",
+      "value": "EXPENSE"
+    },
+    {
+      "name": "Moradia",
+      "value": "HOUSING"
+    },
+    {
+      "name": "Alimentação",
+      "value": "FOOD"
+    },
+    {
+      "name": "Reembolso",
+      "value": "REFUND"
+    },
+    {
+      "name": "Transporte",
+      "value": "TRANSPORT"
+    },
+    {
+      "name": "Vendas",
+      "value": "SALES"
+    },
+    {
+      "name": "Educação",
+      "value": "EDUCATION"
+    },
+    {
+      "name": "Contas",
+      "value": "BILLS"
+    },
+    {
+      "name": "Cashback",
+      "value": "CASHBACK"
+    },
+    {
+      "name": "Saúde",
+      "value": "HEALTH"
+    }
+  ],
   "transactions": [
     {
       "id": 1,
@@ -104,7 +158,7 @@
       "accountId": 1,
       "type": "income",
       "title": "Freelance Work",
-      "category": "Income",
+      "category": "INCOME",
       "amount": 421,
       "date": "2019-09-06",
       "description": "Pagamento recebido por trabalho freelance"
@@ -115,7 +169,7 @@
       "accountId": 1,
       "type": "expense",
       "title": "Spotify Subscr.",
-      "category": "Subscription",
+      "category": "SUBSCRIPTION",
       "amount": 24,
       "date": "2019-09-12",
       "description": "Assinatura mensal Spotify"
@@ -126,7 +180,7 @@
       "accountId": 1,
       "type": "expense",
       "title": "Dropbox Plan",
-      "category": "Subscription",
+      "category": "SUBSCRIPTION",
       "amount": 144,
       "date": "2019-09-18",
       "description": "Plano mensal Dropbox"
@@ -137,7 +191,7 @@
       "accountId": 1,
       "type": "income",
       "title": "Youtube Ads.",
-      "category": "Income",
+      "category": "INCOME",
       "amount": 32,
       "date": "2019-09-10",
       "description": "Receita de anuncios"
@@ -148,7 +202,7 @@
       "accountId": 1787428672212,
       "type": "income",
       "title": "Freelance Work",
-      "category": "Income",
+      "category": "INCOME",
       "amount": 421,
       "date": "2019-09-06",
       "description": "Pagamento recebido por trabalho freelance"
@@ -159,7 +213,7 @@
       "accountId": 1787428672212,
       "type": "expense",
       "title": "Spotify Subscr.",
-      "category": "Subscription",
+      "category": "SUBSCRIPTION",
       "amount": 24,
       "date": "2019-09-12",
       "description": "Assinatura mensal Spotify"
@@ -170,7 +224,7 @@
       "accountId": 1787428672212,
       "type": "expense",
       "title": "Dropbox Plan",
-      "category": "Subscription",
+      "category": "SUBSCRIPTION",
       "amount": 144,
       "date": "2019-09-18",
       "description": "Plano mensal Dropbox"
@@ -181,7 +235,7 @@
       "accountId": 1787428672212,
       "type": "income",
       "title": "Youtube Ads.",
-      "category": "Income",
+      "category": "INCOME",
       "amount": 32,
       "date": "2019-09-10",
       "description": "Receita de anuncios"
@@ -192,7 +246,7 @@
       "accountId": 1787428672212,
       "type": "expense",
       "title": "Teste de crédito",
-      "category": "Expense",
+      "category": "EXPENSE",
       "amount": 3600,
       "date": "2026-08-23",
       "description": ""
@@ -203,7 +257,7 @@
       "accountId": 1787428672212,
       "type": "income",
       "title": "Salario ByteBank",
-      "category": "Salary",
+      "category": "SALARY",
       "amount": 2500,
       "date": "2026-08-20",
       "description": "Credito mensal"
@@ -214,7 +268,7 @@
       "accountId": 1787428672212,
       "type": "expense",
       "title": "Aluguel",
-      "category": "Housing",
+      "category": "HOUSING",
       "amount": 1500,
       "date": "2026-08-19",
       "description": "Pagamento de aluguel"
@@ -225,7 +279,7 @@
       "accountId": 1787428672212,
       "type": "expense",
       "title": "Mercado Central",
-      "category": "Food",
+      "category": "FOOD",
       "amount": 320,
       "date": "2026-08-17",
       "description": "Compras da semana"
@@ -236,7 +290,7 @@
       "accountId": 1787428672212,
       "type": "income",
       "title": "Reembolso Faculdade",
-      "category": "Refund",
+      "category": "REFUND",
       "amount": 320,
       "date": "2026-08-15",
       "description": "Reembolso de material"
@@ -247,7 +301,7 @@
       "accountId": 1787428672212,
       "type": "expense",
       "title": "Uber Campus",
-      "category": "Transport",
+      "category": "TRANSPORT",
       "amount": 80,
       "date": "2026-08-14",
       "description": "Transporte"
@@ -258,7 +312,7 @@
       "accountId": 1787428672212,
       "type": "income",
       "title": "Venda Notebook",
-      "category": "Sales",
+      "category": "SALES",
       "amount": 1580,
       "date": "2026-08-12",
       "description": "Venda de equipamento"
@@ -269,7 +323,7 @@
       "accountId": 1787428672212,
       "type": "expense",
       "title": "Curso React Native",
-      "category": "Education",
+      "category": "EDUCATION",
       "amount": 450,
       "date": "2026-08-10",
       "description": "Curso online"
@@ -280,7 +334,7 @@
       "accountId": 1787428672212,
       "type": "expense",
       "title": "Internet Fibra",
-      "category": "Bills",
+      "category": "BILLS",
       "amount": 130,
       "date": "2026-08-08",
       "description": "Conta de internet"
@@ -291,7 +345,7 @@
       "accountId": 1787428672212,
       "type": "income",
       "title": "Cashback Cartao",
-      "category": "Cashback",
+      "category": "CASHBACK",
       "amount": 130,
       "date": "2026-08-07",
       "description": "Cashback recebido"
@@ -302,7 +356,7 @@
       "accountId": 1787428672212,
       "type": "expense",
       "title": "Farmacia",
-      "category": "Health",
+      "category": "HEALTH",
       "amount": 210,
       "date": "2026-08-05",
       "description": "Compra em farmacia"
@@ -313,7 +367,7 @@
       "accountId": 1787428672212,
       "type": "income",
       "title": "Freela Landing Page",
-      "category": "Income",
+      "category": "INCOME",
       "amount": 210,
       "date": "2026-08-03",
       "description": "Servico de desenvolvimento"

@@ -20,6 +20,11 @@ export type Card = {
   availableLimit: number;
 };
 
+export type Category = {
+  name: string;
+  value: string;
+};
+
 export type TransactionType = "income" | "expense";
 
 export type Transaction = {

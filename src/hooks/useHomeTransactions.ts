@@ -1,6 +1,8 @@
 import { useAuth } from "@/context/AuthContext";
 import { useFinance } from "@/context/FinanceContext";
+import { getCategories } from "@/services/financeApi";
 import {
+  Category,
   Transaction,
   TransactionFilter,
   TransactionSort,
@@ -34,6 +36,7 @@ export function useHomeTransactions() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isFiltersModalVisible, setIsFiltersModalVisible] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState("");
+  const [categories, setCategories] = useState<Category[]>([]);
   const [startDateFilter, setStartDateFilter] = useState("");
   const [endDateFilter, setEndDateFilter] = useState("");
   const [sortFilter, setSortFilter] = useState<TransactionSort>("date_desc");
@@ -50,6 +53,7 @@ export function useHomeTransactions() {
   const [transactionType, setTransactionType] =
     useState<TransactionType>("income");
   const [transactionTitle, setTransactionTitle] = useState("");
+  const [transactionCategory, setTransactionCategory] = useState("");
   const [transactionAmount, setTransactionAmount] = useState("");
   const [transactionDate, setTransactionDate] = useState(getTodayInputDate);
   const [transactionDescription, setTransactionDescription] = useState("");
@@ -95,6 +99,7 @@ export function useHomeTransactions() {
     setEditingTransactionId(null);
     setTransactionType(defaultType);
     setTransactionTitle("");
+    setTransactionCategory("");
     setTransactionAmount("");
     setTransactionDate(getTodayInputDate());
     setTransactionDescription("");
@@ -124,6 +129,7 @@ export function useHomeTransactions() {
     setEditingTransactionId(transaction.id);
     setTransactionType(transaction.type);
     setTransactionTitle(transaction.title);
+    setTransactionCategory(transaction.category);
     setTransactionAmount(formatMoneyValueInput(transaction.amount));
     setTransactionDate(formatBrazilianDateInput(transaction.date));
     setTransactionDescription(transaction.description);
@@ -202,6 +208,11 @@ export function useHomeTransactions() {
       return;
     }
 
+    if (!transactionCategory) {
+      setTransactionError("Selecione uma categoria.");
+      return;
+    }
+
     if (!Number.isFinite(amount) || amount <= 0) {
       setTransactionError("Informe um valor válido.");
       return;
@@ -215,7 +226,7 @@ export function useHomeTransactions() {
         accountId: account.id,
         type: transactionType,
         title: transactionTitle,
-        category: transactionType === "income" ? "Income" : "Expense",
+        category: transactionCategory,
         amount,
         date: parseBrazilianDateInput(transactionDate),
         description: transactionDescription,
@@ -265,6 +276,12 @@ export function useHomeTransactions() {
   }
 
   useEffect(() => {
+    getCategories()
+      .then(setCategories)
+      .catch(() => setCategories([]));
+  }, []);
+
+  useEffect(() => {
     const timeoutId = setTimeout(() => {
       searchTransactions({
         category: appliedCategoryFilter,
@@ -311,11 +328,13 @@ export function useHomeTransactions() {
     transactionDate,
     transactionError,
     transactionModalMode,
+    transactionCategory,
     transactionReceiptName,
     transactionReceiptUrl,
     transactionTitle,
     transactionType,
     user,
+    categories,
     categoryFilter,
     applyAdvancedFilters,
     closeFiltersModal,
@@ -340,6 +359,7 @@ export function useHomeTransactions() {
     sortFilter,
     startDateFilter,
     endDateFilter,
+    setTransactionCategory,
     setTransactionTitle,
     setTransactionType,
   };

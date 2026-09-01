@@ -456,6 +456,56 @@ export default StyleSheet.create({
   filtersDateField: {
     flex: 1,
   },
+  categorySelectContainer: {
+    position: "relative",
+    zIndex: 10,
+  },
+  categorySelectField: {
+    alignItems: "center",
+    borderColor: colors.financePrimary,
+    borderRadius: 5,
+    borderWidth: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    minHeight: 38,
+    paddingHorizontal: 10,
+  },
+  categorySelectValue: {
+    color: colors.textDark,
+    fontSize: 13,
+  },
+  categorySelectPlaceholder: {
+    color: colors.textSubtle,
+  },
+  categorySelectOptions: {
+    backgroundColor: colors.surface,
+    borderColor: colors.financePrimary,
+    borderRadius: 5,
+    borderWidth: 1,
+    elevation: 4,
+    left: 0,
+    maxHeight: 180,
+    position: "absolute",
+    right: 0,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    top: 42,
+    zIndex: 20,
+  },
+  categorySelectOption: {
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  categorySelectOptionText: {
+    color: colors.textDark,
+    fontSize: 13,
+  },
+  categorySelectOptionTextActive: {
+    color: colors.financePrimary,
+    fontWeight: "800",
+  },
   sortControl: {
     backgroundColor: colors.surfaceMuted,
     borderRadius: 6,

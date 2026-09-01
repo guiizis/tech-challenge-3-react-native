@@ -2,6 +2,7 @@ import { env } from "@/config/env";
 import {
   Account,
   Card,
+  Category,
   PaginatedTransactionsResponse,
   Transaction,
   TransactionInput,
@@ -36,6 +37,15 @@ export async function getCardByUserId(userId: number) {
   );
 
   return cards[0] ?? null;
+}
+
+export async function getCategories() {
+  const response = await fetch(`${env.apiUrl}/categories`);
+
+  return parseApiResponse<Category[]>(
+    response,
+    "Nao foi possivel carregar as categorias.",
+  );
 }
 
 export async function getTransactionsByUserId(userId: number) {

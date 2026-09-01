@@ -36,11 +36,13 @@ export default function HomeScreen() {
     transactionDate,
     transactionError,
     transactionModalMode,
+    transactionCategory,
     transactionReceiptName,
     transactionReceiptUrl,
     transactionTitle,
     transactionType,
     user,
+    categories,
     categoryFilter,
     applyAdvancedFilters,
     closeFiltersModal,
@@ -65,6 +67,7 @@ export default function HomeScreen() {
     sortFilter,
     startDateFilter,
     endDateFilter,
+    setTransactionCategory,
     setTransactionTitle,
     setTransactionType,
   } = useHomeTransactions();
@@ -128,6 +131,8 @@ export default function HomeScreen() {
 
       <TransactionFormModal
         amount={transactionAmount}
+        category={transactionCategory}
+        categories={categories}
         date={transactionDate}
         error={transactionError}
         mode={transactionModalMode}
@@ -137,6 +142,7 @@ export default function HomeScreen() {
         type={transactionType}
         visible={isTransactionModalVisible}
         onAmountChange={handleTransactionAmountChange}
+        onCategoryChange={setTransactionCategory}
         onClose={closeTransactionModal}
         onDateChange={handleTransactionDateChange}
         onReceiptUploaded={handleReceiptUploaded}
@@ -146,6 +152,7 @@ export default function HomeScreen() {
       />
 
       <TransactionFiltersModal
+        categories={categories}
         category={categoryFilter}
         endDate={endDateFilter}
         sort={sortFilter}
