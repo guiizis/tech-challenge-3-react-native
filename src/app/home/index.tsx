@@ -36,6 +36,8 @@ export default function HomeScreen() {
     transactionDate,
     transactionError,
     transactionModalMode,
+    transactionReceiptName,
+    transactionReceiptUrl,
     transactionTitle,
     transactionType,
     user,
@@ -44,6 +46,7 @@ export default function HomeScreen() {
     handleDeleteTransaction,
     handleEndDateFilterChange,
     handleFilterChange,
+    handleReceiptUploaded,
     handleStartDateFilterChange,
     handleSubmitTransaction,
     handleTransactionAmountChange,
@@ -122,12 +125,15 @@ export default function HomeScreen() {
         date={transactionDate}
         error={transactionError}
         mode={transactionModalMode}
+        receiptName={transactionReceiptName}
+        receiptUrl={transactionReceiptUrl}
         title={transactionTitle}
         type={transactionType}
         visible={isTransactionModalVisible}
         onAmountChange={handleTransactionAmountChange}
         onClose={closeTransactionModal}
         onDateChange={handleTransactionDateChange}
+        onReceiptUploaded={handleReceiptUploaded}
         onSubmit={handleSubmitTransaction}
         onTitleChange={setTransactionTitle}
         onTypeChange={setTransactionType}

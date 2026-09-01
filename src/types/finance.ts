@@ -32,6 +32,8 @@ export type Transaction = {
   amount: number;
   date: string;
   description: string;
+  receiptUrl?: string;
+  receiptName?: string;
 };
 
 export type TransactionFilter = "all" | TransactionType;

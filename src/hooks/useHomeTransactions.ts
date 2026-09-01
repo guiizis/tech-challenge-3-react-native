@@ -48,6 +48,8 @@ export function useHomeTransactions() {
   const [transactionAmount, setTransactionAmount] = useState("");
   const [transactionDate, setTransactionDate] = useState(getTodayInputDate);
   const [transactionDescription, setTransactionDescription] = useState("");
+  const [transactionReceiptUrl, setTransactionReceiptUrl] = useState("");
+  const [transactionReceiptName, setTransactionReceiptName] = useState("");
   const [transactionError, setTransactionError] = useState("");
   const {
     account,
@@ -91,7 +93,14 @@ export function useHomeTransactions() {
     setTransactionAmount("");
     setTransactionDate(getTodayInputDate());
     setTransactionDescription("");
+    setTransactionReceiptUrl("");
+    setTransactionReceiptName("");
     setTransactionError("");
+  }
+
+  function handleReceiptUploaded(url: string, name: string) {
+    setTransactionReceiptUrl(url);
+    setTransactionReceiptName(name);
   }
 
   function closeTransactionModal() {
@@ -111,6 +120,8 @@ export function useHomeTransactions() {
     setTransactionAmount(formatMoneyValueInput(transaction.amount));
     setTransactionDate(formatBrazilianDateInput(transaction.date));
     setTransactionDescription(transaction.description);
+    setTransactionReceiptUrl(transaction.receiptUrl ?? "");
+    setTransactionReceiptName(transaction.receiptName ?? "");
     setTransactionError("");
     setIsTransactionModalVisible(true);
   }
@@ -173,6 +184,8 @@ export function useHomeTransactions() {
         amount,
         date: parseBrazilianDateInput(transactionDate),
         description: transactionDescription,
+        receiptUrl: transactionReceiptUrl,
+        receiptName: transactionReceiptName,
       };
 
       if (editingTransactionId) {
@@ -259,6 +272,8 @@ export function useHomeTransactions() {
     transactionDate,
     transactionError,
     transactionModalMode,
+    transactionReceiptName,
+    transactionReceiptUrl,
     transactionTitle,
     transactionType,
     user,
@@ -267,6 +282,7 @@ export function useHomeTransactions() {
     handleEndDateFilterChange,
     handleDeleteTransaction,
     handleFilterChange,
+    handleReceiptUploaded,
     handleStartDateFilterChange,
     handleSubmitTransaction,
     handleTransactionAmountChange,

@@ -4,7 +4,14 @@ import { Transaction, TransactionType } from "@/types/finance";
 import { formatCurrency, formatShortDate } from "@/utils/formatters";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { ReactElement } from "react";
-import { FlatList, ListRenderItemInfo, Text, TouchableOpacity, View } from "react-native";
+import {
+  FlatList,
+  Linking,
+  ListRenderItemInfo,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 type TransactionListProps = {
   footer?: ReactElement;
@@ -41,6 +48,12 @@ export default function TransactionList({
   onEdit,
   onEndReached,
 }: TransactionListProps) {
+  function handleDownloadReceipt(transaction: Transaction) {
+    if (transaction.receiptUrl) {
+      Linking.openURL(transaction.receiptUrl);
+    }
+  }
+
   function renderTransaction({ item: transaction }: ListRenderItemInfo<Transaction>) {
     return (
       <View style={styles.transactionCard}>
@@ -70,6 +83,20 @@ export default function TransactionList({
             {formatShortDate(transaction.date)}
           </Text>
           <View style={styles.transactionActions}>
+            {transaction.receiptUrl ? (
+              <TouchableOpacity
+                accessibilityLabel={`Baixar comprovante de ${transaction.title}`}
+                accessibilityRole="button"
+                onPress={() => handleDownloadReceipt(transaction)}
+                style={styles.transactionActionButton}
+              >
+                <FontAwesome5
+                  name="download"
+                  size={15}
+                  color={colors.financePrimary}
+                />
+              </TouchableOpacity>
+            ) : null}
             <TouchableOpacity
               accessibilityLabel={`Editar ${transaction.title}`}
               accessibilityRole="button"

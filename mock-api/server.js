@@ -173,8 +173,18 @@ server.get("/transactions/search", (request, response) => {
 });
 
 server.post("/transactions", (request, response) => {
-  const { userId, accountId, type, title, category, amount, date, description } =
-    request.body;
+  const {
+    userId,
+    accountId,
+    type,
+    title,
+    category,
+    amount,
+    date,
+    description,
+    receiptUrl,
+    receiptName,
+  } = request.body;
   const numericUserId = Number(userId);
   const numericAmount = Number(amount);
 
@@ -218,6 +228,8 @@ server.post("/transactions", (request, response) => {
     amount: numericAmount,
     date: String(date ?? "").trim() || new Date().toISOString().slice(0, 10),
     description: String(description ?? "").trim(),
+    receiptUrl: String(receiptUrl ?? "").trim() || null,
+    receiptName: String(receiptName ?? "").trim() || null,
   };
 
   database.get("transactions").push(transaction).write();

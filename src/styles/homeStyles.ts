@@ -365,6 +365,33 @@ export default StyleSheet.create({
     lineHeight: 14,
     textAlign: "center",
   },
+  receiptFileCard: {
+    alignItems: "center",
+    borderColor: colors.income,
+    borderRadius: 12,
+    borderWidth: 1,
+    flexDirection: "row",
+    gap: 10,
+    minHeight: 56,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  receiptFileName: {
+    color: colors.textDark,
+    flex: 1,
+    fontSize: 12,
+    fontWeight: "600",
+  },
+  receiptFileActions: {
+    flexDirection: "row",
+    gap: 10,
+  },
+  receiptFileActionButton: {
+    alignItems: "center",
+    height: 24,
+    justifyContent: "center",
+    width: 24,
+  },
   modalActions: {
     flexDirection: "row",
     gap: 16,
