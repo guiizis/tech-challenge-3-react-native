@@ -75,7 +75,11 @@ export default function HomeScreen() {
 
   const listHeader = (
     <>
-      <HomeHeader name={user.name} avatarUrl={user.avatarUrl} />
+      <HomeHeader
+        avatarUrl={user.avatarUrl}
+        name={user.name}
+        onLogout={logout}
+      />
       <BalanceCard
         accountType={account?.type}
         balance={displayedBalance}
