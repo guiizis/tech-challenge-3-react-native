@@ -86,9 +86,9 @@ export function useHomeTransactions() {
     ? "edit"
     : "create";
 
-  function resetTransactionForm() {
+  function resetTransactionForm(defaultType: TransactionType = "income") {
     setEditingTransactionId(null);
-    setTransactionType("income");
+    setTransactionType(defaultType);
     setTransactionTitle("");
     setTransactionAmount("");
     setTransactionDate(getTodayInputDate());
@@ -109,7 +109,9 @@ export function useHomeTransactions() {
   }
 
   function openCreateModal() {
-    resetTransactionForm();
+    const defaultType: TransactionType =
+      filter === "expense" ? "expense" : "income";
+    resetTransactionForm(defaultType);
     setIsTransactionModalVisible(true);
   }
 
@@ -192,6 +194,10 @@ export function useHomeTransactions() {
         await updateTransaction(editingTransactionId, transactionInput);
       } else {
         await createTransaction(transactionInput);
+
+        if (filter !== "all" && filter !== transactionType) {
+          setFilter(transactionType);
+        }
       }
 
       setSearchTerm("");

@@ -33,6 +33,12 @@ export default function TransactionToolbar({
     <>
       <View style={styles.filters}>
         <Text
+          onPress={() => onFilterChange("all")}
+          style={[styles.filter, filter === "all" && styles.filterActive]}
+        >
+          Transações
+        </Text>
+        <Text
           onPress={() => onFilterChange("income")}
           style={[styles.filter, filter === "income" && styles.filterActive]}
         >
@@ -43,12 +49,6 @@ export default function TransactionToolbar({
           style={[styles.filter, filter === "expense" && styles.filterActive]}
         >
           Saídas
-        </Text>
-        <Text
-          onPress={() => onFilterChange("all")}
-          style={[styles.filter, filter === "all" && styles.filterActive]}
-        >
-          Transações
         </Text>
       </View>
 
@@ -94,4 +94,3 @@ export default function TransactionToolbar({
     </>
   );
 }
-
