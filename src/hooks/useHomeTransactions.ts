@@ -37,6 +37,11 @@ export function useHomeTransactions() {
   const [startDateFilter, setStartDateFilter] = useState("");
   const [endDateFilter, setEndDateFilter] = useState("");
   const [sortFilter, setSortFilter] = useState<TransactionSort>("date_desc");
+  const [appliedCategoryFilter, setAppliedCategoryFilter] = useState("");
+  const [appliedStartDateFilter, setAppliedStartDateFilter] = useState("");
+  const [appliedEndDateFilter, setAppliedEndDateFilter] = useState("");
+  const [appliedSortFilter, setAppliedSortFilter] =
+    useState<TransactionSort>("date_desc");
   const [isTransactionModalVisible, setIsTransactionModalVisible] =
     useState(false);
   const [editingTransactionId, setEditingTransactionId] = useState<
@@ -148,11 +153,39 @@ export function useHomeTransactions() {
     setEndDateFilter(formatDateInput(value));
   }
 
+  function openFiltersModal() {
+    setCategoryFilter(appliedCategoryFilter);
+    setStartDateFilter(appliedStartDateFilter);
+    setEndDateFilter(appliedEndDateFilter);
+    setSortFilter(appliedSortFilter);
+    setIsFiltersModalVisible(true);
+  }
+
+  function closeFiltersModal() {
+    setCategoryFilter(appliedCategoryFilter);
+    setStartDateFilter(appliedStartDateFilter);
+    setEndDateFilter(appliedEndDateFilter);
+    setSortFilter(appliedSortFilter);
+    setIsFiltersModalVisible(false);
+  }
+
+  function applyAdvancedFilters() {
+    setAppliedCategoryFilter(categoryFilter);
+    setAppliedStartDateFilter(startDateFilter);
+    setAppliedEndDateFilter(endDateFilter);
+    setAppliedSortFilter(sortFilter);
+    setIsFiltersModalVisible(false);
+  }
+
   function resetAdvancedFilters() {
     setCategoryFilter("");
     setStartDateFilter("");
     setEndDateFilter("");
     setSortFilter("date_desc");
+    setAppliedCategoryFilter("");
+    setAppliedStartDateFilter("");
+    setAppliedEndDateFilter("");
+    setAppliedSortFilter("date_desc");
     setIsFiltersModalVisible(false);
   }
 
@@ -234,24 +267,24 @@ export function useHomeTransactions() {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       searchTransactions({
-        category: categoryFilter,
-        endDate: parseBrazilianDateInput(endDateFilter),
+        category: appliedCategoryFilter,
+        endDate: parseBrazilianDateInput(appliedEndDateFilter),
         query: searchTerm,
-        sort: sortFilter,
-        startDate: parseBrazilianDateInput(startDateFilter),
+        sort: appliedSortFilter,
+        startDate: parseBrazilianDateInput(appliedStartDateFilter),
         type: filter,
       });
     }, 300);
 
     return () => clearTimeout(timeoutId);
   }, [
-    categoryFilter,
-    endDateFilter,
+    appliedCategoryFilter,
+    appliedEndDateFilter,
+    appliedSortFilter,
+    appliedStartDateFilter,
     filter,
     searchTerm,
     searchTransactions,
-    sortFilter,
-    startDateFilter,
   ]);
 
   return {
@@ -284,6 +317,8 @@ export function useHomeTransactions() {
     transactionType,
     user,
     categoryFilter,
+    applyAdvancedFilters,
+    closeFiltersModal,
     closeTransactionModal,
     handleEndDateFilterChange,
     handleDeleteTransaction,
@@ -296,9 +331,9 @@ export function useHomeTransactions() {
     loadMoreTransactions,
     openCreateModal,
     openEditModal,
+    openFiltersModal,
     resetAdvancedFilters,
     setCategoryFilter,
-    setIsFiltersModalVisible,
     setIsBalanceVisible,
     setSearchTerm,
     setSortFilter,

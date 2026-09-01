@@ -42,6 +42,8 @@ export default function HomeScreen() {
     transactionType,
     user,
     categoryFilter,
+    applyAdvancedFilters,
+    closeFiltersModal,
     closeTransactionModal,
     handleDeleteTransaction,
     handleEndDateFilterChange,
@@ -54,9 +56,9 @@ export default function HomeScreen() {
     loadMoreTransactions,
     openCreateModal,
     openEditModal,
+    openFiltersModal,
     resetAdvancedFilters,
     setCategoryFilter,
-    setIsFiltersModalVisible,
     setIsBalanceVisible,
     setSearchTerm,
     setSortFilter,
@@ -90,7 +92,7 @@ export default function HomeScreen() {
         searchTerm={searchTerm}
         onAddPress={openCreateModal}
         onFilterChange={handleFilterChange}
-        onFiltersPress={() => setIsFiltersModalVisible(true)}
+        onFiltersPress={openFiltersModal}
         onSearchChange={setSearchTerm}
       />
     </>
@@ -145,9 +147,9 @@ export default function HomeScreen() {
         sort={sortFilter}
         startDate={startDateFilter}
         visible={isFiltersModalVisible}
-        onApply={() => setIsFiltersModalVisible(false)}
+        onApply={applyAdvancedFilters}
         onCategoryChange={setCategoryFilter}
-        onClose={() => setIsFiltersModalVisible(false)}
+        onClose={closeFiltersModal}
         onEndDateChange={handleEndDateFilterChange}
         onReset={resetAdvancedFilters}
         onSortChange={setSortFilter}
