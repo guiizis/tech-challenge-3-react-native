@@ -5,6 +5,7 @@ import { formatCurrency, formatShortDate } from "@/utils/formatters";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { ReactElement } from "react";
 import {
+  ActivityIndicator,
   FlatList,
   Linking,
   ListRenderItemInfo,
@@ -16,6 +17,7 @@ import {
 type TransactionListProps = {
   footer?: ReactElement;
   header?: ReactElement;
+  isLoading?: boolean;
   isLoadingMore?: boolean;
   transactions: Transaction[];
   onDelete: (transaction: Transaction) => void;
@@ -42,6 +44,7 @@ function getTransactionIcon(type: TransactionType, category: string) {
 export default function TransactionList({
   footer,
   header,
+  isLoading = false,
   isLoadingMore = false,
   transactions,
   onDelete,
@@ -134,7 +137,13 @@ export default function TransactionList({
       keyExtractor={(transaction) => String(transaction.id)}
       ListEmptyComponent={
         <View style={styles.transactions}>
-          <Text style={styles.emptyTransactions}>Nenhum resultado encontrado.</Text>
+          {isLoading ? (
+            <ActivityIndicator color={colors.financePrimary} />
+          ) : (
+            <Text style={styles.emptyTransactions}>
+              Nenhum resultado encontrado.
+            </Text>
+          )}
         </View>
       }
       ListFooterComponent={

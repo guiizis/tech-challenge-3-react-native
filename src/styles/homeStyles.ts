@@ -87,6 +87,20 @@ export default StyleSheet.create({
   error: {
     color: colors.danger,
   },
+  transactionsLinkButton: {
+    alignItems: "center",
+    backgroundColor: colors.financePrimary,
+    borderRadius: 8,
+    flexDirection: "row",
+    gap: 10,
+    justifyContent: "center",
+    paddingVertical: 14,
+  },
+  transactionsLinkButtonText: {
+    color: colors.textLight,
+    fontSize: 15,
+    fontWeight: "700",
+  },
   filters: {
     alignItems: "center",
     flexDirection: "row",

@@ -29,7 +29,9 @@ server.use((request, response, next) => {
 server.post("/login", (request, response) => {
   const { email, password } = request.body;
   const users = router.db.get("users");
-  const normalizedEmail = String(email ?? "").trim().toLowerCase();
+  const normalizedEmail = String(email ?? "")
+    .trim()
+    .toLowerCase();
   const user = users.find({ email: normalizedEmail }).value();
 
   if (!user) {
@@ -51,7 +53,9 @@ server.post("/signup", (request, response) => {
   const { name, email, password } = request.body;
   const database = router.db;
   const users = database.get("users");
-  const normalizedEmail = String(email ?? "").trim().toLowerCase();
+  const normalizedEmail = String(email ?? "")
+    .trim()
+    .toLowerCase();
   const existingUser = users.find({ email: normalizedEmail }).value();
 
   if (existingUser) {
@@ -95,7 +99,9 @@ server.post("/signup", (request, response) => {
 server.patch("/password", (request, response) => {
   const { email, password } = request.body;
   const users = router.db.get("users");
-  const normalizedEmail = String(email ?? "").trim().toLowerCase();
+  const normalizedEmail = String(email ?? "")
+    .trim()
+    .toLowerCase();
   const user = users.find({ email: normalizedEmail }).value();
 
   if (!user) {
@@ -112,20 +118,13 @@ server.patch("/password", (request, response) => {
 });
 
 server.get("/transactions/search", (request, response) => {
-  const {
-    userId,
-    q,
-    type,
-    category,
-    startDate,
-    endDate,
-    sort,
-    _page,
-    _limit,
-  } = request.query;
+  const { userId, q, type, category, startDate, endDate, sort, _page, _limit } =
+    request.query;
   const normalizedQuery = normalizeText(q).trim();
   const normalizedType = String(type ?? "").trim();
-  const normalizedCategory = String(category ?? "").trim().toLowerCase();
+  const normalizedCategory = String(category ?? "")
+    .trim()
+    .toLowerCase();
   const numericUserId = Number(userId);
   const page = Math.max(Number(_page) || 1, 1);
   const limit = Math.max(Number(_limit) || 6, 1);
@@ -170,13 +169,15 @@ server.get("/transactions/search", (request, response) => {
   const start = (page - 1) * limit;
   const data = transactions.slice(start, start + limit);
 
-  response.status(200).json({
-    data,
-    total: transactions.length,
-    page,
-    limit,
-    hasMore: start + limit < transactions.length,
-  });
+  setTimeout(() => {
+    response.status(200).json({
+      data,
+      total: transactions.length,
+      page,
+      limit,
+      hasMore: start + limit < transactions.length,
+    });
+  }, 1500);
 });
 
 server.post("/transactions", (request, response) => {
@@ -217,7 +218,10 @@ server.post("/transactions", (request, response) => {
 
   const database = router.db;
   const account =
-    database.get("accounts").find({ id: Number(accountId) }).value() ??
+    database
+      .get("accounts")
+      .find({ id: Number(accountId) })
+      .value() ??
     database.get("accounts").find({ userId: numericUserId }).value();
 
   if (!account) {
