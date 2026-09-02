@@ -1,10 +1,12 @@
+import CategorySelect from "@/components/home/CategorySelect";
 import colors from "@/styles/colors";
 import styles from "@/styles/homeStyles";
-import { TransactionSort } from "@/types/finance";
+import { Category, TransactionSort } from "@/types/finance";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 type TransactionFiltersModalProps = {
+  categories: Category[];
   category: string;
   endDate: string;
   sort: TransactionSort;
@@ -20,6 +22,7 @@ type TransactionFiltersModalProps = {
 };
 
 export default function TransactionFiltersModal({
+  categories,
   category,
   endDate,
   sort,
@@ -53,11 +56,12 @@ export default function TransactionFiltersModal({
           </View>
 
           <Text style={styles.modalLabel}>CATEGORIA:</Text>
-          <TextInput
-            onChangeText={onCategoryChange}
-            placeholder="Ex: Subscription"
-            style={styles.modalInput}
+          <CategorySelect
+            allOptionLabel="Todas as categorias"
+            categories={categories}
             value={category}
+            visible={visible}
+            onChange={onCategoryChange}
           />
 
           <View style={styles.filtersDateRow}>

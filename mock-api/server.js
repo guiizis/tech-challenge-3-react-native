@@ -6,6 +6,13 @@ const router = jsonServer.router(path.join(__dirname, "db.json"));
 const middlewares = jsonServer.defaults();
 const port = process.env.MOCK_API_PORT || 3000;
 
+function normalizeText(value) {
+  return String(value ?? "")
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase();
+}
+
 server.use(middlewares);
 server.use(jsonServer.bodyParser);
 
@@ -116,7 +123,7 @@ server.get("/transactions/search", (request, response) => {
     _page,
     _limit,
   } = request.query;
-  const normalizedQuery = String(q ?? "").trim().toLowerCase();
+  const normalizedQuery = normalizeText(q).trim();
   const normalizedType = String(type ?? "").trim();
   const normalizedCategory = String(category ?? "").trim().toLowerCase();
   const numericUserId = Number(userId);
@@ -138,7 +145,7 @@ server.get("/transactions/search", (request, response) => {
         transaction.type === normalizedType;
       const matchesQuery =
         normalizedQuery === "" ||
-        String(transaction.title ?? "").toLowerCase().includes(normalizedQuery);
+        normalizeText(transaction.title).includes(normalizedQuery);
       const matchesCategory =
         normalizedCategory === "" ||
         String(transaction.category ?? "")

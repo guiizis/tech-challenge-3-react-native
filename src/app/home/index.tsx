@@ -36,12 +36,16 @@ export default function HomeScreen() {
     transactionDate,
     transactionError,
     transactionModalMode,
+    transactionCategory,
     transactionReceiptName,
     transactionReceiptUrl,
     transactionTitle,
     transactionType,
     user,
+    categories,
     categoryFilter,
+    applyAdvancedFilters,
+    closeFiltersModal,
     closeTransactionModal,
     handleDeleteTransaction,
     handleEndDateFilterChange,
@@ -54,15 +58,16 @@ export default function HomeScreen() {
     loadMoreTransactions,
     openCreateModal,
     openEditModal,
+    openFiltersModal,
     resetAdvancedFilters,
     setCategoryFilter,
-    setIsFiltersModalVisible,
     setIsBalanceVisible,
     setSearchTerm,
     setSortFilter,
     sortFilter,
     startDateFilter,
     endDateFilter,
+    setTransactionCategory,
     setTransactionTitle,
     setTransactionType,
   } = useHomeTransactions();
@@ -73,7 +78,11 @@ export default function HomeScreen() {
 
   const listHeader = (
     <>
-      <HomeHeader name={user.name} avatarUrl={user.avatarUrl} />
+      <HomeHeader
+        avatarUrl={user.avatarUrl}
+        name={user.name}
+        onLogout={logout}
+      />
       <BalanceCard
         accountType={account?.type}
         balance={displayedBalance}
@@ -90,7 +99,7 @@ export default function HomeScreen() {
         searchTerm={searchTerm}
         onAddPress={openCreateModal}
         onFilterChange={handleFilterChange}
-        onFiltersPress={() => setIsFiltersModalVisible(true)}
+        onFiltersPress={openFiltersModal}
         onSearchChange={setSearchTerm}
       />
     </>
@@ -122,6 +131,8 @@ export default function HomeScreen() {
 
       <TransactionFormModal
         amount={transactionAmount}
+        category={transactionCategory}
+        categories={categories}
         date={transactionDate}
         error={transactionError}
         mode={transactionModalMode}
@@ -131,6 +142,7 @@ export default function HomeScreen() {
         type={transactionType}
         visible={isTransactionModalVisible}
         onAmountChange={handleTransactionAmountChange}
+        onCategoryChange={setTransactionCategory}
         onClose={closeTransactionModal}
         onDateChange={handleTransactionDateChange}
         onReceiptUploaded={handleReceiptUploaded}
@@ -140,14 +152,15 @@ export default function HomeScreen() {
       />
 
       <TransactionFiltersModal
+        categories={categories}
         category={categoryFilter}
         endDate={endDateFilter}
         sort={sortFilter}
         startDate={startDateFilter}
         visible={isFiltersModalVisible}
-        onApply={() => setIsFiltersModalVisible(false)}
+        onApply={applyAdvancedFilters}
         onCategoryChange={setCategoryFilter}
-        onClose={() => setIsFiltersModalVisible(false)}
+        onClose={closeFiltersModal}
         onEndDateChange={handleEndDateFilterChange}
         onReset={resetAdvancedFilters}
         onSortChange={setSortFilter}

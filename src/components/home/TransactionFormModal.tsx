@@ -1,7 +1,8 @@
+import CategorySelect from "@/components/home/CategorySelect";
 import { uploadFile } from "@/services/storageApi";
 import colors from "@/styles/colors";
 import styles from "@/styles/homeStyles";
-import { TransactionType } from "@/types/finance";
+import { Category, TransactionType } from "@/types/finance";
 import { FontAwesome5 } from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
 import { useState } from "react";
@@ -22,6 +23,8 @@ type ReceiptUploadStatus = "idle" | "uploading" | "error";
 
 type TransactionFormModalProps = {
   amount: string;
+  category: string;
+  categories: Category[];
   date: string;
   error: string;
   mode: "create" | "edit";
@@ -31,6 +34,7 @@ type TransactionFormModalProps = {
   type: TransactionType;
   visible: boolean;
   onAmountChange: (value: string) => void;
+  onCategoryChange: (value: string) => void;
   onClose: () => void;
   onDateChange: (value: string) => void;
   onReceiptUploaded: (url: string, name: string) => void;
@@ -41,6 +45,8 @@ type TransactionFormModalProps = {
 
 export default function TransactionFormModal({
   amount,
+  category,
+  categories,
   date,
   error,
   mode,
@@ -50,6 +56,7 @@ export default function TransactionFormModal({
   type,
   visible,
   onAmountChange,
+  onCategoryChange,
   onClose,
   onDateChange,
   onReceiptUploaded,
@@ -183,6 +190,14 @@ export default function TransactionFormModal({
             </View>
 
             {error ? <Text style={styles.modalError}>{error}</Text> : null}
+
+            <Text style={styles.modalLabel}>CATEGORIA:</Text>
+            <CategorySelect
+              categories={categories}
+              value={category}
+              visible={visible}
+              onChange={onCategoryChange}
+            />
 
             <Text style={styles.modalLabel}>VALOR:</Text>
             <View style={[styles.amountInputContainer, inputStateStyle]}>
