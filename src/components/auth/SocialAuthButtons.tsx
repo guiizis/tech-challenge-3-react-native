@@ -1,8 +1,27 @@
 import styles from "@/styles/authStyles";
 import { FontAwesome5 } from "@expo/vector-icons";
-import { Text, TouchableOpacity, View } from "react-native";
+import { useEffect, useRef } from "react";
+import { Animated, Text, TouchableOpacity, View } from "react-native";
 
 export default function SocialAuthButtons() {
+  const googleAnim = useRef(new Animated.Value(0)).current;
+  const facebookAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.stagger(100, [
+      Animated.spring(googleAnim, {
+        toValue: 1,
+        friction: 4,
+        useNativeDriver: true,
+      }),
+      Animated.spring(facebookAnim, {
+        toValue: 1,
+        friction: 4,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [googleAnim, facebookAnim]);
+
   return (
     <>
       <View style={styles.socialHeader}>
@@ -11,22 +30,31 @@ export default function SocialAuthButtons() {
       </View>
 
       <View style={styles.socialRow}>
-        <TouchableOpacity
-          style={[styles.socialButton, styles.socialButtonDisabled]}
-          disabled
-          accessibilityState={{ disabled: true }}
-          accessibilityLabel="Login com Google em breve"
+        <Animated.View
+          style={{ opacity: googleAnim, transform: [{ scale: googleAnim }] }}
         >
-          <FontAwesome5 name="google" size={20} color="#fff" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.socialButton, styles.socialButtonFb, styles.socialButtonDisabled]}
-          disabled
-          accessibilityState={{ disabled: true }}
-          accessibilityLabel="Login com Facebook em breve"
+          <TouchableOpacity
+            style={[styles.socialButton, styles.socialButtonDisabled]}
+            disabled
+            accessibilityState={{ disabled: true }}
+            accessibilityLabel="Login com Google em breve"
+          >
+            <FontAwesome5 name="google" size={20} color="#fff" />
+          </TouchableOpacity>
+        </Animated.View>
+
+        <Animated.View
+          style={{ opacity: facebookAnim, transform: [{ scale: facebookAnim }] }}
         >
-          <FontAwesome5 name="facebook-f" size={20} color="#fff" />
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.socialButton, styles.socialButtonFb, styles.socialButtonDisabled]}
+            disabled
+            accessibilityState={{ disabled: true }}
+            accessibilityLabel="Login com Facebook em breve"
+          >
+            <FontAwesome5 name="facebook-f" size={20} color="#fff" />
+          </TouchableOpacity>
+        </Animated.View>
       </View>
     </>
   );
