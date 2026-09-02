@@ -38,6 +38,7 @@
   "devDependencies": {
     "@types/react": "~19.2.2",
     "concurrently": "^9.2.4",
+    "dotenv": "^17.4.2",
     "eslint": "^9.0.0",
     "eslint-config-expo": "~57.0.1",
     "json-server": "^0.17.4",
@@ -49,9 +50,11 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "expo lint",
-    "mock:api": "node mock-api/server.js",
-    "mock:api:watch": "json-server --watch mock-api/db.json --port 3000",
-    "dev:mock": "concurrently --kill-others --raw --handle-input --default-input-target 1 \"npm run mock:api\" \"npm run start\""
+    "bff": "node bff/server.js",
+    "dev:bff": "concurrently --kill-others --raw --handle-input --default-input-target 1 \"npm run bff\" \"npm run start\"",
+    "web:bff": "concurrently --kill-others --raw --handle-input --default-input-target 1 \"npm run bff\" \"npm run web\"",
+    "android:bff": "concurrently --kill-others --raw --handle-input --default-input-target 1 \"npm run bff\" \"npm run android\"",
+    "ios:bff": "concurrently --kill-others --raw --handle-input --default-input-target 1 \"npm run bff\" \"npm run ios\""
   },
   "private": true
 }
