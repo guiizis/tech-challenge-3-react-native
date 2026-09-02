@@ -97,6 +97,60 @@
       "availableLimit": 3820
     }
   ],
+  "categories": [
+    {
+      "name": "Salário",
+      "value": "SALARY"
+    },
+    {
+      "name": "Renda",
+      "value": "INCOME"
+    },
+    {
+      "name": "Assinatura",
+      "value": "SUBSCRIPTION"
+    },
+    {
+      "name": "Despesa",
+      "value": "EXPENSE"
+    },
+    {
+      "name": "Moradia",
+      "value": "HOUSING"
+    },
+    {
+      "name": "Alimentação",
+      "value": "FOOD"
+    },
+    {
+      "name": "Reembolso",
+      "value": "REFUND"
+    },
+    {
+      "name": "Transporte",
+      "value": "TRANSPORT"
+    },
+    {
+      "name": "Vendas",
+      "value": "SALES"
+    },
+    {
+      "name": "Educação",
+      "value": "EDUCATION"
+    },
+    {
+      "name": "Contas",
+      "value": "BILLS"
+    },
+    {
+      "name": "Cashback",
+      "value": "CASHBACK"
+    },
+    {
+      "name": "Saúde",
+      "value": "HEALTH"
+    }
+  ],
   "transactions": [
     {
       "id": 1,
@@ -104,7 +158,7 @@
       "accountId": 1,
       "type": "income",
       "title": "Freelance Work",
-      "category": "Income",
+      "category": "INCOME",
       "amount": 421,
       "date": "2019-09-06",
       "description": "Pagamento recebido por trabalho freelance"
@@ -115,7 +169,7 @@
       "accountId": 1,
       "type": "expense",
       "title": "Spotify Subscr.",
-      "category": "Subscription",
+      "category": "SUBSCRIPTION",
       "amount": 24,
       "date": "2019-09-12",
       "description": "Assinatura mensal Spotify"
@@ -126,7 +180,7 @@
       "accountId": 1,
       "type": "expense",
       "title": "Dropbox Plan",
-      "category": "Subscription",
+      "category": "SUBSCRIPTION",
       "amount": 144,
       "date": "2019-09-18",
       "description": "Plano mensal Dropbox"
@@ -137,7 +191,7 @@
       "accountId": 1,
       "type": "income",
       "title": "Youtube Ads.",
-      "category": "Income",
+      "category": "INCOME",
       "amount": 32,
       "date": "2019-09-10",
       "description": "Receita de anuncios"
@@ -148,7 +202,7 @@
       "accountId": 1787428672212,
       "type": "income",
       "title": "Freelance Work",
-      "category": "Income",
+      "category": "INCOME",
       "amount": 421,
       "date": "2019-09-06",
       "description": "Pagamento recebido por trabalho freelance"
@@ -159,7 +213,7 @@
       "accountId": 1787428672212,
       "type": "expense",
       "title": "Spotify Subscr.",
-      "category": "Subscription",
+      "category": "SUBSCRIPTION",
       "amount": 24,
       "date": "2019-09-12",
       "description": "Assinatura mensal Spotify"
@@ -170,7 +224,7 @@
       "accountId": 1787428672212,
       "type": "expense",
       "title": "Dropbox Plan",
-      "category": "Subscription",
+      "category": "SUBSCRIPTION",
       "amount": 144,
       "date": "2019-09-18",
       "description": "Plano mensal Dropbox"
@@ -181,7 +235,7 @@
       "accountId": 1787428672212,
       "type": "income",
       "title": "Youtube Ads.",
-      "category": "Income",
+      "category": "INCOME",
       "amount": 32,
       "date": "2019-09-10",
       "description": "Receita de anuncios"
@@ -192,7 +246,7 @@
       "accountId": 1787428672212,
       "type": "expense",
       "title": "Teste de crédito",
-      "category": "Expense",
+      "category": "EXPENSE",
       "amount": 3600,
       "date": "2026-08-23",
       "description": ""
@@ -203,7 +257,7 @@
       "accountId": 1787428672212,
       "type": "income",
       "title": "Salario ByteBank",
-      "category": "Salary",
+      "category": "SALARY",
       "amount": 2500,
       "date": "2026-08-20",
       "description": "Credito mensal"
@@ -214,7 +268,7 @@
       "accountId": 1787428672212,
       "type": "expense",
       "title": "Aluguel",
-      "category": "Housing",
+      "category": "HOUSING",
       "amount": 1500,
       "date": "2026-08-19",
       "description": "Pagamento de aluguel"
@@ -225,7 +279,7 @@
       "accountId": 1787428672212,
       "type": "expense",
       "title": "Mercado Central",
-      "category": "Food",
+      "category": "FOOD",
       "amount": 320,
       "date": "2026-08-17",
       "description": "Compras da semana"
@@ -236,7 +290,7 @@
       "accountId": 1787428672212,
       "type": "income",
       "title": "Reembolso Faculdade",
-      "category": "Refund",
+      "category": "REFUND",
       "amount": 320,
       "date": "2026-08-15",
       "description": "Reembolso de material"
@@ -247,7 +301,7 @@
       "accountId": 1787428672212,
       "type": "expense",
       "title": "Uber Campus",
-      "category": "Transport",
+      "category": "TRANSPORT",
       "amount": 80,
       "date": "2026-08-14",
       "description": "Transporte"
@@ -258,7 +312,7 @@
       "accountId": 1787428672212,
       "type": "income",
       "title": "Venda Notebook",
-      "category": "Sales",
+      "category": "SALES",
       "amount": 1580,
       "date": "2026-08-12",
       "description": "Venda de equipamento"
@@ -269,7 +323,7 @@
       "accountId": 1787428672212,
       "type": "expense",
       "title": "Curso React Native",
-      "category": "Education",
+      "category": "EDUCATION",
       "amount": 450,
       "date": "2026-08-10",
       "description": "Curso online"
@@ -280,7 +334,7 @@
       "accountId": 1787428672212,
       "type": "expense",
       "title": "Internet Fibra",
-      "category": "Bills",
+      "category": "BILLS",
       "amount": 130,
       "date": "2026-08-08",
       "description": "Conta de internet"
@@ -291,7 +345,7 @@
       "accountId": 1787428672212,
       "type": "income",
       "title": "Cashback Cartao",
-      "category": "Cashback",
+      "category": "CASHBACK",
       "amount": 130,
       "date": "2026-08-07",
       "description": "Cashback recebido"
@@ -302,7 +356,7 @@
       "accountId": 1787428672212,
       "type": "expense",
       "title": "Farmacia",
-      "category": "Health",
+      "category": "HEALTH",
       "amount": 210,
       "date": "2026-08-05",
       "description": "Compra em farmacia"
@@ -313,10 +367,340 @@
       "accountId": 1787428672212,
       "type": "income",
       "title": "Freela Landing Page",
-      "category": "Income",
+      "category": "INCOME",
       "amount": 210,
       "date": "2026-08-03",
       "description": "Servico de desenvolvimento"
+    },
+    {
+      "id": 1787600000001,
+      "userId": 1,
+      "accountId": 1,
+      "type": "income",
+      "title": "Salario ByteBank",
+      "category": "SALARY",
+      "amount": 4200,
+      "date": "2026-09-01",
+      "description": "Credito mensal"
+    },
+    {
+      "id": 1787600000002,
+      "userId": 1,
+      "accountId": 1,
+      "type": "expense",
+      "title": "Aluguel",
+      "category": "HOUSING",
+      "amount": 1800,
+      "date": "2026-08-31",
+      "description": "Pagamento de aluguel"
+    },
+    {
+      "id": 1787600000003,
+      "userId": 1,
+      "accountId": 1,
+      "type": "expense",
+      "title": "Mercado Central",
+      "category": "FOOD",
+      "amount": 385,
+      "date": "2026-08-30",
+      "description": "Compras da semana"
+    },
+    {
+      "id": 1787600000004,
+      "userId": 1,
+      "accountId": 1,
+      "type": "income",
+      "title": "Reembolso Plano de Saude",
+      "category": "REFUND",
+      "amount": 210,
+      "date": "2026-08-29",
+      "description": "Reembolso de consulta"
+    },
+    {
+      "id": 1787600000005,
+      "userId": 1,
+      "accountId": 1,
+      "type": "expense",
+      "title": "Uber Trabalho",
+      "category": "TRANSPORT",
+      "amount": 64,
+      "date": "2026-08-28",
+      "description": "Transporte diario"
+    },
+    {
+      "id": 1787600000006,
+      "userId": 1,
+      "accountId": 1,
+      "type": "income",
+      "title": "Venda Bicicleta",
+      "category": "SALES",
+      "amount": 950,
+      "date": "2026-08-27",
+      "description": "Venda de equipamento usado"
+    },
+    {
+      "id": 1787600000007,
+      "userId": 1,
+      "accountId": 1,
+      "type": "expense",
+      "title": "Curso de Ingles",
+      "category": "EDUCATION",
+      "amount": 320,
+      "date": "2026-08-26",
+      "description": "Mensalidade curso online"
+    },
+    {
+      "id": 1787600000008,
+      "userId": 1,
+      "accountId": 1,
+      "type": "expense",
+      "title": "Conta de Luz",
+      "category": "BILLS",
+      "amount": 245,
+      "date": "2026-08-25",
+      "description": "Fatura de energia eletrica"
+    },
+    {
+      "id": 1787600000009,
+      "userId": 1,
+      "accountId": 1,
+      "type": "income",
+      "title": "Cashback Cartao",
+      "category": "CASHBACK",
+      "amount": 58,
+      "date": "2026-08-24",
+      "description": "Cashback recebido"
+    },
+    {
+      "id": 1787600000010,
+      "userId": 1,
+      "accountId": 1,
+      "type": "expense",
+      "title": "Farmacia Popular",
+      "category": "HEALTH",
+      "amount": 175,
+      "date": "2026-08-23",
+      "description": "Compra de medicamentos"
+    },
+    {
+      "id": 1787600000011,
+      "userId": 1,
+      "accountId": 1,
+      "type": "income",
+      "title": "Freela Site Institucional",
+      "category": "INCOME",
+      "amount": 1350,
+      "date": "2026-08-22",
+      "description": "Desenvolvimento de site"
+    },
+    {
+      "id": 1787600000012,
+      "userId": 1,
+      "accountId": 1,
+      "type": "expense",
+      "title": "Netflix Subscr.",
+      "category": "SUBSCRIPTION",
+      "amount": 44,
+      "date": "2026-08-21",
+      "description": "Assinatura mensal Netflix"
+    },
+    {
+      "id": 1787600000013,
+      "userId": 1,
+      "accountId": 1,
+      "type": "expense",
+      "title": "Academia",
+      "category": "HEALTH",
+      "amount": 120,
+      "date": "2026-08-20",
+      "description": "Mensalidade da academia"
+    },
+    {
+      "id": 1787600000014,
+      "userId": 1,
+      "accountId": 1,
+      "type": "income",
+      "title": "Dividendos Investimento",
+      "category": "INCOME",
+      "amount": 275,
+      "date": "2026-08-19",
+      "description": "Rendimento de investimentos"
+    },
+    {
+      "id": 1787600000015,
+      "userId": 1,
+      "accountId": 1,
+      "type": "expense",
+      "title": "Combustivel",
+      "category": "TRANSPORT",
+      "amount": 210,
+      "date": "2026-08-18",
+      "description": "Abastecimento do carro"
+    },
+    {
+      "id": 1787600000016,
+      "userId": 1,
+      "accountId": 1,
+      "type": "expense",
+      "title": "Restaurante",
+      "category": "FOOD",
+      "amount": 96,
+      "date": "2026-08-17",
+      "description": "Jantar com amigos"
+    },
+    {
+      "id": 1787600000017,
+      "userId": 1,
+      "accountId": 1,
+      "type": "income",
+      "title": "Reembolso Viagem",
+      "category": "REFUND",
+      "amount": 430,
+      "date": "2026-08-16",
+      "description": "Reembolso de despesas de viagem"
+    },
+    {
+      "id": 1787600000018,
+      "userId": 1,
+      "accountId": 1,
+      "type": "expense",
+      "title": "Plano de Celular",
+      "category": "BILLS",
+      "amount": 89,
+      "date": "2026-08-15",
+      "description": "Fatura mensal de telefonia"
+    },
+    {
+      "id": 1787600000019,
+      "userId": 1,
+      "accountId": 1,
+      "type": "income",
+      "title": "Venda Console",
+      "category": "SALES",
+      "amount": 1200,
+      "date": "2026-08-14",
+      "description": "Venda de eletronico usado"
+    },
+    {
+      "id": 1787600000020,
+      "userId": 1,
+      "accountId": 1,
+      "type": "expense",
+      "title": "Livros Tecnicos",
+      "category": "EDUCATION",
+      "amount": 180,
+      "date": "2026-08-13",
+      "description": "Compra de material de estudo"
+    },
+    {
+      "id": 1787600000021,
+      "userId": 1,
+      "accountId": 1,
+      "type": "expense",
+      "title": "Spotify Subscr.",
+      "category": "SUBSCRIPTION",
+      "amount": 24,
+      "date": "2026-08-12",
+      "description": "Assinatura mensal Spotify"
+    },
+    {
+      "id": 1787600000022,
+      "userId": 1,
+      "accountId": 1,
+      "type": "income",
+      "title": "Cashback Compras",
+      "category": "CASHBACK",
+      "amount": 33,
+      "date": "2026-08-11",
+      "description": "Cashback recebido"
+    },
+    {
+      "id": 1787600000023,
+      "userId": 1,
+      "accountId": 1,
+      "type": "expense",
+      "title": "Condominio",
+      "category": "HOUSING",
+      "amount": 620,
+      "date": "2026-08-10",
+      "description": "Taxa condominial mensal"
+    },
+    {
+      "id": 1787600000024,
+      "userId": 1,
+      "accountId": 1,
+      "type": "expense",
+      "title": "Supermercado",
+      "category": "FOOD",
+      "amount": 410,
+      "date": "2026-08-09",
+      "description": "Compras do mes"
+    },
+    {
+      "id": 1787600000025,
+      "userId": 1,
+      "accountId": 1,
+      "type": "income",
+      "title": "Consultoria Freelance",
+      "category": "INCOME",
+      "amount": 900,
+      "date": "2026-08-08",
+      "description": "Servico de consultoria prestado"
+    },
+    {
+      "id": 1787600000026,
+      "userId": 1,
+      "accountId": 1,
+      "type": "expense",
+      "title": "Estacionamento",
+      "category": "TRANSPORT",
+      "amount": 45,
+      "date": "2026-08-07",
+      "description": "Estacionamento no centro"
+    },
+    {
+      "id": 1787600000027,
+      "userId": 1,
+      "accountId": 1,
+      "type": "expense",
+      "title": "Consulta Medica",
+      "category": "HEALTH",
+      "amount": 250,
+      "date": "2026-08-06",
+      "description": "Consulta particular"
+    },
+    {
+      "id": 1787600000028,
+      "userId": 1,
+      "accountId": 1,
+      "type": "income",
+      "title": "Reembolso Farmacia",
+      "category": "REFUND",
+      "amount": 60,
+      "date": "2026-08-05",
+      "description": "Reembolso de plano de saude"
+    },
+    {
+      "id": 1787600000029,
+      "userId": 1,
+      "accountId": 1,
+      "type": "expense",
+      "title": "Agua e Esgoto",
+      "category": "BILLS",
+      "amount": 78,
+      "date": "2026-08-04",
+      "description": "Conta de agua"
+    },
+    {
+      "id": 1787600000030,
+      "userId": 1,
+      "accountId": 1,
+      "type": "income",
+      "title": "Venda Roupas",
+      "category": "SALES",
+      "amount": 150,
+      "date": "2026-08-03",
+      "description": "Venda de itens usados"
     }
   ]
 }

@@ -20,6 +20,11 @@ export type Card = {
   availableLimit: number;
 };
 
+export type Category = {
+  name: string;
+  value: string;
+};
+
 export type TransactionType = "income" | "expense";
 
 export type Transaction = {
@@ -32,6 +37,8 @@ export type Transaction = {
   amount: number;
   date: string;
   description: string;
+  receiptUrl?: string;
+  receiptName?: string;
 };
 
 export type TransactionFilter = "all" | TransactionType;

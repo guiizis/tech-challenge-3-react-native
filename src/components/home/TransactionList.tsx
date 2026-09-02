@@ -4,11 +4,20 @@ import { Transaction, TransactionType } from "@/types/finance";
 import { formatCurrency, formatShortDate } from "@/utils/formatters";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { ReactElement } from "react";
-import { FlatList, ListRenderItemInfo, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  Linking,
+  ListRenderItemInfo,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 type TransactionListProps = {
   footer?: ReactElement;
   header?: ReactElement;
+  isLoading?: boolean;
   isLoadingMore?: boolean;
   transactions: Transaction[];
   onDelete: (transaction: Transaction) => void;
@@ -35,12 +44,19 @@ function getTransactionIcon(type: TransactionType, category: string) {
 export default function TransactionList({
   footer,
   header,
+  isLoading = false,
   isLoadingMore = false,
   transactions,
   onDelete,
   onEdit,
   onEndReached,
 }: TransactionListProps) {
+  function handleDownloadReceipt(transaction: Transaction) {
+    if (transaction.receiptUrl) {
+      Linking.openURL(transaction.receiptUrl);
+    }
+  }
+
   function renderTransaction({ item: transaction }: ListRenderItemInfo<Transaction>) {
     return (
       <View style={styles.transactionCard}>
@@ -70,6 +86,20 @@ export default function TransactionList({
             {formatShortDate(transaction.date)}
           </Text>
           <View style={styles.transactionActions}>
+            {transaction.receiptUrl ? (
+              <TouchableOpacity
+                accessibilityLabel={`Baixar comprovante de ${transaction.title}`}
+                accessibilityRole="button"
+                onPress={() => handleDownloadReceipt(transaction)}
+                style={styles.transactionActionButton}
+              >
+                <FontAwesome5
+                  name="download"
+                  size={15}
+                  color={colors.financePrimary}
+                />
+              </TouchableOpacity>
+            ) : null}
             <TouchableOpacity
               accessibilityLabel={`Editar ${transaction.title}`}
               accessibilityRole="button"
@@ -107,7 +137,13 @@ export default function TransactionList({
       keyExtractor={(transaction) => String(transaction.id)}
       ListEmptyComponent={
         <View style={styles.transactions}>
-          <Text style={styles.emptyTransactions}>Nenhum resultado encontrado.</Text>
+          {isLoading ? (
+            <ActivityIndicator color={colors.financePrimary} />
+          ) : (
+            <Text style={styles.emptyTransactions}>
+              Nenhum resultado encontrado.
+            </Text>
+          )}
         </View>
       }
       ListFooterComponent={

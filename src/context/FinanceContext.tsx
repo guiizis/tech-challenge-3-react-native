@@ -49,8 +49,6 @@ type FinanceAction =
         account: Account | null;
         card: Card | null;
         transactions: Transaction[];
-        visibleTransactions: Transaction[];
-        hasMoreTransactions: boolean;
       };
     }
   | { type: "LOAD_FINANCE_ERROR"; payload: string }
@@ -135,8 +133,8 @@ function financeReducer(
         account: action.payload.account,
         card: action.payload.card,
         transactions: action.payload.transactions,
-        visibleTransactions: action.payload.visibleTransactions,
-        hasMoreTransactions: action.payload.hasMoreTransactions,
+        visibleTransactions: [],
+        hasMoreTransactions: false,
         transactionFilters: { page: 1, sort: "date_desc", type: "all" },
         isLoading: false,
         error: "",
@@ -243,27 +241,15 @@ export function FinanceProvider({ children }: PropsWithChildren) {
     dispatch({ type: "LOAD_FINANCE_START" });
 
     try {
-      const [account, card, transactions, paginatedTransactions] =
-        await Promise.all([
+      const [account, card, transactions] = await Promise.all([
         getAccountByUserId(user.id),
         getCardByUserId(user.id),
         getTransactionsByUserId(user.id),
-        searchTransactionsByFilters(user.id, {
-          page: 1,
-          sort: "date_desc",
-          type: "all",
-        }),
       ]);
 
       dispatch({
         type: "LOAD_FINANCE_SUCCESS",
-        payload: {
-          account,
-          card,
-          transactions,
-          visibleTransactions: paginatedTransactions.data,
-          hasMoreTransactions: paginatedTransactions.hasMore,
-        },
+        payload: { account, card, transactions },
       });
     } catch (error) {
       dispatch({

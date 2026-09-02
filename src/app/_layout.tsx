@@ -28,6 +28,7 @@ export default function Layout() {
           name="home"
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
+        <Stack.Screen name="transactions" options={{ title: "Transações" }} />
       </Stack>
     </AppProviders>
   );

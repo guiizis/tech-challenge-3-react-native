@@ -2,13 +2,17 @@ import { env } from "@/config/env";
 import {
   Account,
   Card,
+  Category,
   PaginatedTransactionsResponse,
   Transaction,
   TransactionInput,
   TransactionSearchFilters,
 } from "@/types/finance";
 
-async function parseApiResponse<T>(response: Response, fallbackMessage: string) {
+async function parseApiResponse<T>(
+  response: Response,
+  fallbackMessage: string,
+) {
   const data = await response.json();
 
   if (!response.ok) {
@@ -38,6 +42,15 @@ export async function getCardByUserId(userId: number) {
   return cards[0] ?? null;
 }
 
+export async function getCategories() {
+  const response = await fetch(`${env.apiUrl}/categories`);
+
+  return parseApiResponse<Category[]>(
+    response,
+    "Nao foi possivel carregar as categorias.",
+  );
+}
+
 export async function getTransactionsByUserId(userId: number) {
   const response = await fetch(
     `${env.apiUrl}/transactions?userId=${userId}&_sort=date&_order=desc`,
@@ -58,7 +71,7 @@ export async function searchTransactionsByFilters(
     q: filters.query?.trim() ?? "",
     type: filters.type ?? "all",
     _page: String(filters.page ?? 1),
-    _limit: "6",
+    _limit: "8",
   });
 
   if (filters.category?.trim()) {

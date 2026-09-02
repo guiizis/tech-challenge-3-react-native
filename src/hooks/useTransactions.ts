@@ -1,6 +1,8 @@
 import { useAuth } from "@/context/AuthContext";
 import { useFinance } from "@/context/FinanceContext";
+import { getCategories } from "@/services/financeApi";
 import {
+  Category,
   Transaction,
   TransactionFilter,
   TransactionSort,
@@ -8,15 +10,13 @@ import {
 } from "@/types/finance";
 import {
   formatBrazilianDateInput,
-  formatCurrency,
   formatDateInput,
   formatMoneyInput,
   formatMoneyValueInput,
-  formatTodayLabel,
   parseBrazilianDateInput,
   parseMoneyInput,
 } from "@/utils/formatters";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Alert } from "react-native";
 
 function getTodayInputDate() {
@@ -28,15 +28,20 @@ function getTodayInputDate() {
   return `${day}/${month}/${year}`;
 }
 
-export function useHomeTransactions() {
-  const { user, logout } = useAuth();
-  const [isBalanceVisible, setIsBalanceVisible] = useState(true);
+export function useTransactions() {
+  const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [isFiltersModalVisible, setIsFiltersModalVisible] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState("");
+  const [categories, setCategories] = useState<Category[]>([]);
   const [startDateFilter, setStartDateFilter] = useState("");
   const [endDateFilter, setEndDateFilter] = useState("");
   const [sortFilter, setSortFilter] = useState<TransactionSort>("date_desc");
+  const [appliedCategoryFilter, setAppliedCategoryFilter] = useState("");
+  const [appliedStartDateFilter, setAppliedStartDateFilter] = useState("");
+  const [appliedEndDateFilter, setAppliedEndDateFilter] = useState("");
+  const [appliedSortFilter, setAppliedSortFilter] =
+    useState<TransactionSort>("date_desc");
   const [isTransactionModalVisible, setIsTransactionModalVisible] =
     useState(false);
   const [editingTransactionId, setEditingTransactionId] = useState<
@@ -45,13 +50,15 @@ export function useHomeTransactions() {
   const [transactionType, setTransactionType] =
     useState<TransactionType>("income");
   const [transactionTitle, setTransactionTitle] = useState("");
+  const [transactionCategory, setTransactionCategory] = useState("");
   const [transactionAmount, setTransactionAmount] = useState("");
   const [transactionDate, setTransactionDate] = useState(getTodayInputDate);
   const [transactionDescription, setTransactionDescription] = useState("");
+  const [transactionReceiptUrl, setTransactionReceiptUrl] = useState("");
+  const [transactionReceiptName, setTransactionReceiptName] = useState("");
   const [transactionError, setTransactionError] = useState("");
   const {
     account,
-    currentBalance,
     filteredTransactions,
     filter,
     setFilter,
@@ -61,9 +68,6 @@ export function useHomeTransactions() {
     createTransaction,
     updateTransaction,
     deleteTransaction,
-    incomeTotal,
-    expenseTotal,
-    overviewPercentage,
     isLoading,
     isLoadingMoreTransactions,
     isSearching,
@@ -71,27 +75,26 @@ export function useHomeTransactions() {
     error,
   } = useFinance();
 
-  const balance = useMemo(
-    () => formatCurrency(currentBalance),
-    [currentBalance],
-  );
-  const displayedBalance = isBalanceVisible ? balance : "R$ ******";
-  const firstName = useMemo(() => {
-    return user?.name.trim().split(/\s+/)[0] ?? "Usuario";
-  }, [user?.name]);
-  const balanceCardDate = useMemo(() => formatTodayLabel(), []);
   const transactionModalMode: "create" | "edit" = editingTransactionId
     ? "edit"
     : "create";
 
-  function resetTransactionForm() {
+  function resetTransactionForm(defaultType: TransactionType = "income") {
     setEditingTransactionId(null);
-    setTransactionType("income");
+    setTransactionType(defaultType);
     setTransactionTitle("");
+    setTransactionCategory("");
     setTransactionAmount("");
     setTransactionDate(getTodayInputDate());
     setTransactionDescription("");
+    setTransactionReceiptUrl("");
+    setTransactionReceiptName("");
     setTransactionError("");
+  }
+
+  function handleReceiptUploaded(url: string, name: string) {
+    setTransactionReceiptUrl(url);
+    setTransactionReceiptName(name);
   }
 
   function closeTransactionModal() {
@@ -100,7 +103,9 @@ export function useHomeTransactions() {
   }
 
   function openCreateModal() {
-    resetTransactionForm();
+    const defaultType: TransactionType =
+      filter === "expense" ? "expense" : "income";
+    resetTransactionForm(defaultType);
     setIsTransactionModalVisible(true);
   }
 
@@ -108,9 +113,12 @@ export function useHomeTransactions() {
     setEditingTransactionId(transaction.id);
     setTransactionType(transaction.type);
     setTransactionTitle(transaction.title);
+    setTransactionCategory(transaction.category);
     setTransactionAmount(formatMoneyValueInput(transaction.amount));
     setTransactionDate(formatBrazilianDateInput(transaction.date));
     setTransactionDescription(transaction.description);
+    setTransactionReceiptUrl(transaction.receiptUrl ?? "");
+    setTransactionReceiptName(transaction.receiptName ?? "");
     setTransactionError("");
     setIsTransactionModalVisible(true);
   }
@@ -135,11 +143,39 @@ export function useHomeTransactions() {
     setEndDateFilter(formatDateInput(value));
   }
 
+  function openFiltersModal() {
+    setCategoryFilter(appliedCategoryFilter);
+    setStartDateFilter(appliedStartDateFilter);
+    setEndDateFilter(appliedEndDateFilter);
+    setSortFilter(appliedSortFilter);
+    setIsFiltersModalVisible(true);
+  }
+
+  function closeFiltersModal() {
+    setCategoryFilter(appliedCategoryFilter);
+    setStartDateFilter(appliedStartDateFilter);
+    setEndDateFilter(appliedEndDateFilter);
+    setSortFilter(appliedSortFilter);
+    setIsFiltersModalVisible(false);
+  }
+
+  function applyAdvancedFilters() {
+    setAppliedCategoryFilter(categoryFilter);
+    setAppliedStartDateFilter(startDateFilter);
+    setAppliedEndDateFilter(endDateFilter);
+    setAppliedSortFilter(sortFilter);
+    setIsFiltersModalVisible(false);
+  }
+
   function resetAdvancedFilters() {
     setCategoryFilter("");
     setStartDateFilter("");
     setEndDateFilter("");
     setSortFilter("date_desc");
+    setAppliedCategoryFilter("");
+    setAppliedStartDateFilter("");
+    setAppliedEndDateFilter("");
+    setAppliedSortFilter("date_desc");
     setIsFiltersModalVisible(false);
   }
 
@@ -156,6 +192,11 @@ export function useHomeTransactions() {
       return;
     }
 
+    if (!transactionCategory) {
+      setTransactionError("Selecione uma categoria.");
+      return;
+    }
+
     if (!Number.isFinite(amount) || amount <= 0) {
       setTransactionError("Informe um valor válido.");
       return;
@@ -169,16 +210,22 @@ export function useHomeTransactions() {
         accountId: account.id,
         type: transactionType,
         title: transactionTitle,
-        category: transactionType === "income" ? "Income" : "Expense",
+        category: transactionCategory,
         amount,
         date: parseBrazilianDateInput(transactionDate),
         description: transactionDescription,
+        receiptUrl: transactionReceiptUrl,
+        receiptName: transactionReceiptName,
       };
 
       if (editingTransactionId) {
         await updateTransaction(editingTransactionId, transactionInput);
       } else {
         await createTransaction(transactionInput);
+
+        if (filter !== "all" && filter !== transactionType) {
+          setFilter(transactionType);
+        }
       }
 
       setSearchTerm("");
@@ -213,60 +260,64 @@ export function useHomeTransactions() {
   }
 
   useEffect(() => {
+    getCategories()
+      .then(setCategories)
+      .catch(() => setCategories([]));
+  }, []);
+
+  useEffect(() => {
     const timeoutId = setTimeout(() => {
       searchTransactions({
-        category: categoryFilter,
-        endDate: parseBrazilianDateInput(endDateFilter),
+        category: appliedCategoryFilter,
+        endDate: parseBrazilianDateInput(appliedEndDateFilter),
         query: searchTerm,
-        sort: sortFilter,
-        startDate: parseBrazilianDateInput(startDateFilter),
+        sort: appliedSortFilter,
+        startDate: parseBrazilianDateInput(appliedStartDateFilter),
         type: filter,
       });
     }, 300);
 
     return () => clearTimeout(timeoutId);
   }, [
-    categoryFilter,
-    endDateFilter,
+    appliedCategoryFilter,
+    appliedEndDateFilter,
+    appliedSortFilter,
+    appliedStartDateFilter,
     filter,
     searchTerm,
     searchTransactions,
-    sortFilter,
-    startDateFilter,
   ]);
 
   return {
-    account,
-    balanceCardDate,
-    displayedBalance,
     error,
-    expenseTotal,
     filter,
     filteredTransactions,
-    firstName,
-    incomeTotal,
-    isBalanceVisible,
     isFiltersModalVisible,
     isLoading,
     isLoadingMoreTransactions,
     isSearching,
     isTransactionModalVisible,
     hasMoreTransactions,
-    logout,
-    overviewPercentage,
     searchTerm,
     transactionAmount,
     transactionDate,
     transactionError,
     transactionModalMode,
+    transactionCategory,
+    transactionReceiptName,
+    transactionReceiptUrl,
     transactionTitle,
     transactionType,
     user,
+    categories,
     categoryFilter,
+    applyAdvancedFilters,
+    closeFiltersModal,
     closeTransactionModal,
     handleEndDateFilterChange,
     handleDeleteTransaction,
     handleFilterChange,
+    handleReceiptUploaded,
     handleStartDateFilterChange,
     handleSubmitTransaction,
     handleTransactionAmountChange,
@@ -274,15 +325,15 @@ export function useHomeTransactions() {
     loadMoreTransactions,
     openCreateModal,
     openEditModal,
+    openFiltersModal,
     resetAdvancedFilters,
     setCategoryFilter,
-    setIsFiltersModalVisible,
-    setIsBalanceVisible,
     setSearchTerm,
     setSortFilter,
     sortFilter,
     startDateFilter,
     endDateFilter,
+    setTransactionCategory,
     setTransactionTitle,
     setTransactionType,
   };
