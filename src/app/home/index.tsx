@@ -1,15 +1,17 @@
 import BalanceCard from "@/components/home/BalanceCard";
 import HomeHeader from "@/components/home/HomeHeader";
 import OverviewSection from "@/components/home/OverviewSection";
-import TransactionFiltersModal from "@/components/home/TransactionFiltersModal";
-import TransactionFormModal from "@/components/home/TransactionFormModal";
-import TransactionList from "@/components/home/TransactionList";
-import TransactionToolbar from "@/components/home/TransactionToolbar";
-import { useHomeTransactions } from "@/hooks/useHomeTransactions";
+import { useHomeOverview } from "@/hooks/useHomeOverview";
 import colors from "@/styles/colors";
 import styles from "@/styles/homeStyles";
-import { Redirect } from "expo-router";
-import { ActivityIndicator, Text, View } from "react-native";
+import { FontAwesome5 } from "@expo/vector-icons";
+import { Link, Redirect } from "expo-router";
+import {
+  ActivityIndicator,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 
 export default function HomeScreen() {
   const {
@@ -18,66 +20,25 @@ export default function HomeScreen() {
     displayedBalance,
     error,
     expenseTotal,
-    filter,
-    filteredTransactions,
     firstName,
     incomeTotal,
     isBalanceVisible,
-    isFiltersModalVisible,
     isLoading,
-    isLoadingMoreTransactions,
-    isSearching,
-    isTransactionModalVisible,
-    hasMoreTransactions,
     logout,
     overviewPercentage,
-    searchTerm,
-    transactionAmount,
-    transactionDate,
-    transactionError,
-    transactionModalMode,
-    transactionCategory,
-    transactionReceiptName,
-    transactionReceiptUrl,
-    transactionTitle,
-    transactionType,
-    user,
-    categories,
-    categoryFilter,
-    applyAdvancedFilters,
-    closeFiltersModal,
-    closeTransactionModal,
-    handleDeleteTransaction,
-    handleEndDateFilterChange,
-    handleFilterChange,
-    handleReceiptUploaded,
-    handleStartDateFilterChange,
-    handleSubmitTransaction,
-    handleTransactionAmountChange,
-    handleTransactionDateChange,
-    loadMoreTransactions,
-    openCreateModal,
-    openEditModal,
-    openFiltersModal,
-    resetAdvancedFilters,
-    setCategoryFilter,
     setIsBalanceVisible,
-    setSearchTerm,
-    setSortFilter,
-    sortFilter,
-    startDateFilter,
-    endDateFilter,
-    setTransactionCategory,
-    setTransactionTitle,
-    setTransactionType,
-  } = useHomeTransactions();
+    user,
+  } = useHomeOverview();
 
   if (!user) {
     return <Redirect href="/login" />;
   }
 
-  const listHeader = (
-    <>
+  return (
+    <ScrollView
+      contentContainerStyle={styles.container}
+      style={styles.screen}
+    >
       <HomeHeader
         avatarUrl={user.avatarUrl}
         name={user.name}
@@ -93,79 +54,29 @@ export default function HomeScreen() {
       />
       {isLoading ? <ActivityIndicator color={colors.financePrimary} /> : null}
       {error ? <Text style={styles.error}>{error}</Text> : null}
-      <TransactionToolbar
-        filter={filter}
-        isSearching={isSearching}
-        searchTerm={searchTerm}
-        onAddPress={openCreateModal}
-        onFilterChange={handleFilterChange}
-        onFiltersPress={openFiltersModal}
-        onSearchChange={setSearchTerm}
-      />
-    </>
-  );
-  const listFooter = (
-    <>
-      {!hasMoreTransactions && filteredTransactions.length > 0 ? (
-        <Text style={styles.loadingMoreTransactions}>Fim da lista</Text>
-      ) : null}
+
+      <Link asChild href="/transactions">
+        <TouchableOpacity
+          accessibilityLabel="Ver transações"
+          accessibilityRole="button"
+          style={styles.transactionsLinkButton}
+        >
+          <Text style={styles.transactionsLinkButtonText}>
+            Ver transações
+          </Text>
+          <FontAwesome5
+            color={colors.textLight}
+            name="arrow-right"
+            size={14}
+          />
+        </TouchableOpacity>
+      </Link>
+
       <OverviewSection
         expenseTotal={expenseTotal}
         incomeTotal={incomeTotal}
         percentage={overviewPercentage}
       />
-    </>
-  );
-
-  return (
-    <View style={styles.screen}>
-      <TransactionList
-        footer={listFooter}
-        header={listHeader}
-        isLoadingMore={isLoadingMoreTransactions}
-        transactions={filteredTransactions}
-        onEndReached={loadMoreTransactions}
-        onDelete={handleDeleteTransaction}
-        onEdit={openEditModal}
-      />
-
-      <TransactionFormModal
-        amount={transactionAmount}
-        category={transactionCategory}
-        categories={categories}
-        date={transactionDate}
-        error={transactionError}
-        mode={transactionModalMode}
-        receiptName={transactionReceiptName}
-        receiptUrl={transactionReceiptUrl}
-        title={transactionTitle}
-        type={transactionType}
-        visible={isTransactionModalVisible}
-        onAmountChange={handleTransactionAmountChange}
-        onCategoryChange={setTransactionCategory}
-        onClose={closeTransactionModal}
-        onDateChange={handleTransactionDateChange}
-        onReceiptUploaded={handleReceiptUploaded}
-        onSubmit={handleSubmitTransaction}
-        onTitleChange={setTransactionTitle}
-        onTypeChange={setTransactionType}
-      />
-
-      <TransactionFiltersModal
-        categories={categories}
-        category={categoryFilter}
-        endDate={endDateFilter}
-        sort={sortFilter}
-        startDate={startDateFilter}
-        visible={isFiltersModalVisible}
-        onApply={applyAdvancedFilters}
-        onCategoryChange={setCategoryFilter}
-        onClose={closeFiltersModal}
-        onEndDateChange={handleEndDateFilterChange}
-        onReset={resetAdvancedFilters}
-        onSortChange={setSortFilter}
-        onStartDateChange={handleStartDateFilterChange}
-      />
-    </View>
+    </ScrollView>
   );
 }

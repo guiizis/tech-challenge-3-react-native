@@ -16,6 +16,7 @@ export default function Layout() {
         <Stack.Screen name="signup" options={{ headerShown: false }} />
         <Stack.Screen name="forgot-password" options={{ headerShown: false }} />
         <Stack.Screen name="home" options={{ headerShown: false }} />
+        <Stack.Screen name="transactions" options={{ title: "Transações" }} />
       </Stack>
     </AppProviders>
   );

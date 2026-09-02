@@ -9,7 +9,10 @@ import {
   TransactionSearchFilters,
 } from "@/types/finance";
 
-async function parseApiResponse<T>(response: Response, fallbackMessage: string) {
+async function parseApiResponse<T>(
+  response: Response,
+  fallbackMessage: string,
+) {
   const data = await response.json();
 
   if (!response.ok) {
@@ -68,7 +71,7 @@ export async function searchTransactionsByFilters(
     q: filters.query?.trim() ?? "",
     type: filters.type ?? "all",
     _page: String(filters.page ?? 1),
-    _limit: "6",
+    _limit: "8",
   });
 
   if (filters.category?.trim()) {

@@ -10,15 +10,13 @@ import {
 } from "@/types/finance";
 import {
   formatBrazilianDateInput,
-  formatCurrency,
   formatDateInput,
   formatMoneyInput,
   formatMoneyValueInput,
-  formatTodayLabel,
   parseBrazilianDateInput,
   parseMoneyInput,
 } from "@/utils/formatters";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Alert } from "react-native";
 
 function getTodayInputDate() {
@@ -30,9 +28,8 @@ function getTodayInputDate() {
   return `${day}/${month}/${year}`;
 }
 
-export function useHomeTransactions() {
-  const { user, logout } = useAuth();
-  const [isBalanceVisible, setIsBalanceVisible] = useState(true);
+export function useTransactions() {
+  const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [isFiltersModalVisible, setIsFiltersModalVisible] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState("");
@@ -62,7 +59,6 @@ export function useHomeTransactions() {
   const [transactionError, setTransactionError] = useState("");
   const {
     account,
-    currentBalance,
     filteredTransactions,
     filter,
     setFilter,
@@ -72,9 +68,6 @@ export function useHomeTransactions() {
     createTransaction,
     updateTransaction,
     deleteTransaction,
-    incomeTotal,
-    expenseTotal,
-    overviewPercentage,
     isLoading,
     isLoadingMoreTransactions,
     isSearching,
@@ -82,15 +75,6 @@ export function useHomeTransactions() {
     error,
   } = useFinance();
 
-  const balance = useMemo(
-    () => formatCurrency(currentBalance),
-    [currentBalance],
-  );
-  const displayedBalance = isBalanceVisible ? balance : "R$ ******";
-  const firstName = useMemo(() => {
-    return user?.name.trim().split(/\s+/)[0] ?? "Usuario";
-  }, [user?.name]);
-  const balanceCardDate = useMemo(() => formatTodayLabel(), []);
   const transactionModalMode: "create" | "edit" = editingTransactionId
     ? "edit"
     : "create";
@@ -305,24 +289,15 @@ export function useHomeTransactions() {
   ]);
 
   return {
-    account,
-    balanceCardDate,
-    displayedBalance,
     error,
-    expenseTotal,
     filter,
     filteredTransactions,
-    firstName,
-    incomeTotal,
-    isBalanceVisible,
     isFiltersModalVisible,
     isLoading,
     isLoadingMoreTransactions,
     isSearching,
     isTransactionModalVisible,
     hasMoreTransactions,
-    logout,
-    overviewPercentage,
     searchTerm,
     transactionAmount,
     transactionDate,
@@ -353,7 +328,6 @@ export function useHomeTransactions() {
     openFiltersModal,
     resetAdvancedFilters,
     setCategoryFilter,
-    setIsBalanceVisible,
     setSearchTerm,
     setSortFilter,
     sortFilter,
