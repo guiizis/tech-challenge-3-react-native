@@ -1,7 +1,8 @@
 import colors from "@/styles/colors";
 import styles from "@/styles/homeStyles";
 import { FontAwesome5 } from "@expo/vector-icons";
-import { Text, TouchableOpacity, View } from "react-native";
+import { useEffect, useRef } from "react";
+import { Animated, Text, TouchableOpacity, View } from "react-native";
 
 type BalanceCardProps = {
   accountType?: string;
@@ -20,8 +21,66 @@ export default function BalanceCard({
   isBalanceVisible,
   onToggleBalance,
 }: BalanceCardProps) {
+  const cardFade = useRef(new Animated.Value(0)).current;
+  const cardSlide = useRef(new Animated.Value(20)).current;
+  const balanceFade = useRef(new Animated.Value(1)).current;
+  const iconScale = useRef(new Animated.Value(1)).current;
+
+  // Entrada do card ao montar
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(cardFade, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+      Animated.timing(cardSlide, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [cardFade, cardSlide]);
+
+  // Crossfade quando o saldo muda de conteúdo (visível/oculto)
+  useEffect(() => {
+    Animated.sequence([
+      Animated.timing(balanceFade, {
+        toValue: 0,
+        duration: 120,
+        useNativeDriver: true,
+      }),
+      Animated.timing(balanceFade, {
+        toValue: 1,
+        duration: 180,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [balance, balanceFade]);
+
+  const handleToggle = () => {
+    Animated.sequence([
+      Animated.spring(iconScale, {
+        toValue: 1.3,
+        friction: 3,
+        useNativeDriver: true,
+      }),
+      Animated.spring(iconScale, {
+        toValue: 1,
+        friction: 3,
+        useNativeDriver: true,
+      }),
+    ]).start();
+    onToggleBalance();
+  };
+
   return (
-    <View style={styles.balanceCard}>
+    <Animated.View
+      style={[
+        styles.balanceCard,
+        { opacity: cardFade, transform: [{ translateY: cardSlide }] },
+      ]}
+    >
       <View style={styles.balanceHeader}>
         <Text style={styles.balanceGreeting}>Ola, {firstName}!</Text>
         <Text style={styles.balanceDate}>{dateLabel}</Text>
@@ -34,21 +93,24 @@ export default function BalanceCard({
             isBalanceVisible ? "Esconder saldo" : "Mostrar saldo"
           }
           accessibilityRole="button"
-          onPress={onToggleBalance}
+          onPress={handleToggle}
           style={styles.balanceVisibilityButton}
         >
-          <FontAwesome5
-            name={isBalanceVisible ? "eye" : "eye-slash"}
-            size={16}
-            color={colors.textLight}
-          />
+          <Animated.View style={{ transform: [{ scale: iconScale }] }}>
+            <FontAwesome5
+              name={isBalanceVisible ? "eye" : "eye-slash"}
+              size={16}
+              color={colors.textLight}
+            />
+          </Animated.View>
         </TouchableOpacity>
       </View>
       <View style={styles.balanceDivider} />
 
       <Text style={styles.accountType}>{accountType}</Text>
-      <Text style={styles.balance}>{balance}</Text>
-    </View>
+      <Animated.Text style={[styles.balance, { opacity: balanceFade }]}>
+        {balance}
+      </Animated.Text>
+    </Animated.View>
   );
 }
-
