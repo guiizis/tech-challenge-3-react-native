@@ -472,7 +472,6 @@ export default StyleSheet.create({
   },
   categorySelectContainer: {
     position: "relative",
-    zIndex: 10,
   },
   categorySelectField: {
     alignItems: "center",
@@ -491,30 +490,32 @@ export default StyleSheet.create({
   categorySelectPlaceholder: {
     color: colors.textSubtle,
   },
-  categorySelectOptions: {
+  categorySelectModalBackdrop: {
+    backgroundColor: colors.modalBackdrop,
+    flex: 1,
+    justifyContent: "flex-end",
+  },
+  categorySelectModalSheet: {
     backgroundColor: colors.surface,
-    borderColor: colors.financePrimary,
-    borderRadius: 5,
-    borderWidth: 1,
-    elevation: 4,
-    left: 0,
-    maxHeight: 180,
-    position: "absolute",
-    right: 0,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 6,
-    top: 42,
-    zIndex: 20,
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
+    maxHeight: "70%",
+    padding: 18,
+    width: "100%",
+  },
+  categorySelectModalTitle: {
+    color: colors.financePrimary,
+    fontSize: 16,
+    fontWeight: "800",
+    marginBottom: 8,
   },
   categorySelectOption: {
     paddingHorizontal: 12,
-    paddingVertical: 10,
+    paddingVertical: 14,
   },
   categorySelectOptionText: {
     color: colors.textDark,
-    fontSize: 13,
+    fontSize: 14,
   },
   categorySelectOptionTextActive: {
     color: colors.financePrimary,

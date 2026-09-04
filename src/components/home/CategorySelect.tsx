@@ -3,7 +3,14 @@ import styles from "@/styles/homeStyles";
 import { Category } from "@/types/finance";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  FlatList,
+  Modal,
+  Pressable,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 type CategorySelectProps = {
   allOptionLabel?: string;
@@ -12,6 +19,11 @@ type CategorySelectProps = {
   value: string;
   visible: boolean;
   onChange: (value: string) => void;
+};
+
+type CategoryOption = {
+  label: string;
+  value: string;
 };
 
 export default function CategorySelect({
@@ -39,11 +51,16 @@ export default function CategorySelect({
     setIsOpen(false);
   }
 
+  const options: CategoryOption[] = [
+    ...(allOptionLabel ? [{ label: allOptionLabel, value: "" }] : []),
+    ...categories.map((item) => ({ label: item.name, value: item.value })),
+  ];
+
   return (
     <View style={styles.categorySelectContainer}>
       <TouchableOpacity
         accessibilityRole="button"
-        onPress={() => setIsOpen((current) => !current)}
+        onPress={() => setIsOpen(true)}
         style={styles.categorySelectField}
       >
         <Text
@@ -55,45 +72,49 @@ export default function CategorySelect({
           {selectedLabel || placeholder}
         </Text>
         <FontAwesome5
-          name={isOpen ? "chevron-up" : "chevron-down"}
+          name="chevron-down"
           size={12}
           color={colors.financePrimary}
         />
       </TouchableOpacity>
 
-      {isOpen ? (
-        <View style={styles.categorySelectOptions}>
-          <ScrollView nestedScrollEnabled>
-            {allOptionLabel ? (
-              <TouchableOpacity
-                onPress={() => handleSelect("")}
-                style={styles.categorySelectOption}
-              >
-                <Text style={styles.categorySelectOptionText}>
-                  {allOptionLabel}
-                </Text>
-              </TouchableOpacity>
-            ) : null}
-            {categories.map((item) => (
-              <TouchableOpacity
-                key={item.value}
-                onPress={() => handleSelect(item.value)}
-                style={styles.categorySelectOption}
-              >
-                <Text
-                  style={[
-                    styles.categorySelectOptionText,
-                    item.value === value &&
-                      styles.categorySelectOptionTextActive,
-                  ]}
+      <Modal
+        animationType="fade"
+        onRequestClose={() => setIsOpen(false)}
+        transparent
+        visible={isOpen}
+      >
+        <Pressable
+          onPress={() => setIsOpen(false)}
+          style={styles.categorySelectModalBackdrop}
+        >
+          <Pressable style={styles.categorySelectModalSheet}>
+            <Text style={styles.categorySelectModalTitle}>
+              {placeholder}
+            </Text>
+            <FlatList
+              data={options}
+              keyExtractor={(item) => item.value}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  onPress={() => handleSelect(item.value)}
+                  style={styles.categorySelectOption}
                 >
-                  {item.name}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
-      ) : null}
+                  <Text
+                    style={[
+                      styles.categorySelectOptionText,
+                      item.value === value &&
+                        styles.categorySelectOptionTextActive,
+                    ]}
+                  >
+                    {item.label}
+                  </Text>
+                </TouchableOpacity>
+              )}
+            />
+          </Pressable>
+        </Pressable>
+      </Modal>
     </View>
   );
 }
