@@ -1,5 +1,5 @@
 import { FontAwesome5 } from "@expo/vector-icons";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Animated,
   Text,
@@ -21,8 +21,8 @@ export default function AuthTextField({ label, error, ...inputProps }: AuthTextF
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const secureTextEntry = hasPasswordVisibilityToggle && !isPasswordVisible;
 
-  const focusAnim = useRef(new Animated.Value(0)).current;
-  const errorAnim = useRef(new Animated.Value(0)).current;
+  const [focusAnim] = useState(() => new Animated.Value(0));
+  const [errorAnim] = useState(() => new Animated.Value(0));
 
   useEffect(() => {
     Animated.timing(errorAnim, {
