@@ -1,7 +1,7 @@
 import colors from "@/styles/colors";
 import styles from "@/styles/homeStyles";
 import { FontAwesome5 } from "@expo/vector-icons";
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 import { Animated, Text, TouchableOpacity, View } from "react-native";
 
 type BalanceCardProps = {
@@ -21,10 +21,10 @@ export default function BalanceCard({
   isBalanceVisible,
   onToggleBalance,
 }: BalanceCardProps) {
-  const cardFade = useRef(new Animated.Value(0)).current;
-  const cardSlide = useRef(new Animated.Value(20)).current;
-  const balanceFade = useRef(new Animated.Value(1)).current;
-  const iconScale = useRef(new Animated.Value(1)).current;
+  const [cardFade] = useState(() => new Animated.Value(0));
+  const [cardSlide] = useState(() => new Animated.Value(20));
+  const [balanceFade] = useState(() => new Animated.Value(1));
+  const [iconScale] = useState(() => new Animated.Value(1));
 
   // Entrada do card ao montar
   useEffect(() => {

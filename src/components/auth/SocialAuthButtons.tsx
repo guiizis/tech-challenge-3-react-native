@@ -1,11 +1,11 @@
 import styles from "@/styles/authStyles";
 import { FontAwesome5 } from "@expo/vector-icons";
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 import { Animated, Text, TouchableOpacity, View } from "react-native";
 
 export default function SocialAuthButtons() {
-  const googleAnim = useRef(new Animated.Value(0)).current;
-  const facebookAnim = useRef(new Animated.Value(0)).current;
+  const [googleAnim] = useState(() => new Animated.Value(0));
+  const [facebookAnim] = useState(() => new Animated.Value(0));
 
   useEffect(() => {
     Animated.stagger(100, [

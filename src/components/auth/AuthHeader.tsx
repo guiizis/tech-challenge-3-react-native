@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 import { Animated } from "react-native";
 import styles from "@/styles/authStyles";
 
@@ -8,8 +8,8 @@ type AuthHeaderProps = {
 };
 
 export default function AuthHeader({ title, accent }: AuthHeaderProps) {
-  const titleAnim = useRef(new Animated.Value(0)).current;
-  const accentAnim = useRef(new Animated.Value(0)).current;
+  const [titleAnim] = useState(() => new Animated.Value(0));
+  const [accentAnim] = useState(() => new Animated.Value(0));
 
   useEffect(() => {
     Animated.stagger(150, [

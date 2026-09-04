@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Animated, Text, TouchableOpacity } from "react-native";
 import colors from "@/styles/colors";
@@ -15,7 +15,7 @@ export default function AuthPrimaryButton({
   onPress,
   disabled = false,
 }: AuthPrimaryButtonProps) {
-  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const [scaleAnim] = useState(() => new Animated.Value(1));
 
   const handlePressIn = () => {
     Animated.spring(scaleAnim, {
