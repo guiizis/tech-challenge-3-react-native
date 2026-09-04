@@ -202,6 +202,11 @@ export function useTransactions() {
       return;
     }
 
+    if (!/^\d{2}\/\d{2}\/\d{4}$/.test(transactionDate)) {
+      setTransactionError("Informe uma data válida.");
+      return;
+    }
+
     setTransactionError("");
 
     try {
